@@ -34,7 +34,11 @@ class _SigninScreenState extends ConsumerState<SigninScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              Text('Veuillez renseigner vos identifiants pour vous connecter', textAlign: TextAlign.center),
+              Text(
+                'Veuillez renseigner vos identifiants pour vous connecter',
+                textAlign: TextAlign.center,
+                style: TextStyle(fontSize: 16),
+              ),
               Gap(16),
               RichText(
                 text: TextSpan(

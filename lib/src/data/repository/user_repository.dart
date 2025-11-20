@@ -10,7 +10,7 @@ abstract class UserRepository {
 
   User? getUser();
 
-  deleteUser();
+  deleteSession();
 }
 
 class UserRepositoryImpl extends UserRepository {
@@ -32,7 +32,7 @@ class UserRepositoryImpl extends UserRepository {
   }
 
   @override
-  deleteUser() => _localStorage.deleteSession();
+  deleteSession() => _localStorage.deleteSession();
 
   @override
   User? getUser() => _localStorage.getUser();

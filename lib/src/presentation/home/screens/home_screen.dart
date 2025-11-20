@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:tax_collect/src/presentation/contribuable/contribuable.dart';
+import 'package:tax_collect/src/presentation/profile/profile.dart';
 import 'package:tax_collect/src/presentation/tax_collect/screens/screens.dart';
 import 'package:tax_collect/src/widgets/session_observer.dart';
 
@@ -28,7 +29,7 @@ class _HomeScreenState extends State<HomeScreen> {
               setState(() {});
             }
           },
-          children: [Container(), TaxCollectScreen(), ContribuableScreen(), Container()],
+          children: [Container(), TaxCollectScreen(), ContribuableScreen(), ProfileScreen()],
         ),
         bottomNavigationBar: BottomNavigationBar(
           items: [

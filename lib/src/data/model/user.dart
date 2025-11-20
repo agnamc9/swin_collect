@@ -30,6 +30,8 @@ class User {
     isFirstLogin = json['isFirstLogin'];
   }
 
+  String get fullname => "$firstName $lastName";
+
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     if (id != null) data['id'] = id;

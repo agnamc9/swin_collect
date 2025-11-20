@@ -16,6 +16,8 @@ class _SigninScreenState extends ConsumerState<SigninScreen> {
   final TextEditingController _passwordController = TextEditingController();
   late SigninController _signinController;
 
+  final _formKey = GlobalKey<FormState>();
+
   @override
   void initState() {
     _signinController = ref.read(signinControllerProvider);
@@ -30,68 +32,85 @@ class _SigninScreenState extends ConsumerState<SigninScreen> {
       appBar: AppBar(title: Text("Connexion"), centerTitle: true),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              Text(
-                'Veuillez renseigner vos identifiants pour vous connecter',
-                textAlign: TextAlign.center,
-                style: TextStyle(fontSize: 16),
-              ),
-              Gap(16),
-              RichText(
-                text: TextSpan(
-                  style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
-                  text: "Identifiant",
-                  children: [
-                    TextSpan(
-                      text: " *",
-                      style: TextStyle(color: Colors.red),
-                    ),
-                  ],
+        child: Form(
+          key: _formKey,
+          child: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Text(
+                  'Veuillez renseigner vos identifiants pour vous connecter',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(fontSize: 16),
                 ),
-              ),
-              Gap(8),
-              TextField(
-                controller: _usernameController,
-                decoration: InputDecoration(
-                  border: OutlineInputBorder(borderSide: BorderSide(color: Colors.black)),
-                  filled: true,
-                  fillColor: Colors.white,
+                Gap(16),
+                RichText(
+                  text: TextSpan(
+                    style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+                    text: "Identifiant",
+                    children: [
+                      TextSpan(
+                        text: " *",
+                        style: TextStyle(color: Colors.red),
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-              Gap(8),
-              RichText(
-                text: TextSpan(
-                  style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
-                  text: "Mot de passe",
-                  children: [
-                    TextSpan(
-                      text: " *",
-                      style: TextStyle(color: Colors.red),
-                    ),
-                  ],
+                Gap(8),
+                TextFormField(
+                  controller: _usernameController,
+                  decoration: InputDecoration(
+                    border: OutlineInputBorder(borderSide: BorderSide(color: Colors.black)),
+                    filled: true,
+                    fillColor: Colors.white,
+                  ),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return "L'identifiant est requis";
+                    }
+                    return null;
+                  },
                 ),
-              ),
-              Gap(8),
-              TextField(
-                controller: _passwordController,
-                decoration: InputDecoration(
-                  border: OutlineInputBorder(borderSide: BorderSide(color: Colors.black)),
-                  filled: true,
-                  fillColor: Colors.white,
+                Gap(16),
+                RichText(
+                  text: TextSpan(
+                    style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+                    text: "Mot de passe",
+                    children: [
+                      TextSpan(
+                        text: " *",
+                        style: TextStyle(color: Colors.red),
+                      ),
+                    ],
+                  ),
                 ),
-                obscureText: true,
-              ),
-              Gap(16),
-              ElevatedButton(
-                onPressed: () {
-                  _submit();
-                },
-                child: Text("Se connecter"),
-              ),
-            ],
+                Gap(16),
+                TextFormField(
+                  controller: _passwordController,
+                  decoration: InputDecoration(
+                    border: OutlineInputBorder(borderSide: BorderSide(color: Colors.black)),
+                    filled: true,
+                    fillColor: Colors.white,
+                  ),
+                  obscureText: true,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return "Le mot de passe";
+                    }
+                    return null;
+                  },
+                ),
+                Gap(16),
+                ElevatedButton(
+                  onPressed: () {
+                    if (_formKey.currentState!.validate()) {
+                      _submit();
+                    }
+                  },
+                  child: Text("Se connecter"),
+                ),
+              ],
+            ),
           ),
         ),
       ),

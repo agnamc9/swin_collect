@@ -8,4 +8,9 @@ class IdentityType {
     id = json['id'];
     label = json['label'];
   }
+
+  @override
+  bool operator ==(Object other) {
+    return other is IdentityType && other.id == id;
+  }
 }

@@ -17,6 +17,7 @@ dependencies:
   gap: ^3.0.1
   intl: ^0.20.2
   event_bus: ^2.0.1
+  location: ^8.0.1
 
 dev_dependencies:
   flutter_test:

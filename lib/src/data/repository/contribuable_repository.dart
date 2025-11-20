@@ -7,6 +7,20 @@ final contribuableRepositoryProvider = Provider((ref) {
 
 abstract class ContribuableRepository {
   Future<ApiResponse<Contribuable>> getContribuables();
+
+  Future<ApiResponse> create({
+    required String nom,
+    required String prenoms,
+    required String matricule,
+    required String adresse,
+    required String telephone,
+    required String activite,
+    required String numeroPiece,
+    required num tax,
+    required int identityId,
+    required double latitude,
+    required double longitude,
+  });
 }
 
 class ContribuableRepositoryImpl extends ContribuableRepository {
@@ -19,6 +33,39 @@ class ContribuableRepositoryImpl extends ContribuableRepository {
     return runBlock(() async {
       var items = await _remoteClient.getContribuables();
       return ApiResponse<Contribuable>(items: items);
+    });
+  }
+
+  @override
+  Future<ApiResponse> create({
+    required String nom,
+    required String prenoms,
+    required String matricule,
+    required String adresse,
+    required String telephone,
+    required String activite,
+    required String numeroPiece,
+    required num tax,
+    required int identityId,
+    required double latitude,
+    required double longitude,
+  }) {
+    return runBlock(() async {
+      var result = await _remoteClient.createContribuable({
+        "firstname": nom,
+        "lastname": prenoms,
+        "address": adresse,
+        "ville": "",
+        "phoneNumber": telephone,
+        "latitude": "${latitude}",
+        "longitude": "${longitude}",
+        "photoPath": "",
+        "idIdentity": numeroPiece,
+        "identityTypeId": identityId,
+        "activite": activite,
+        "tax": tax,
+      });
+      return ApiResponse<Contribuable>();
     });
   }
 }

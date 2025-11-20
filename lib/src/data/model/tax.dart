@@ -46,4 +46,9 @@ class Tax {
     data['taux'] = this.taux;
     return data;
   }
+
+  @override
+  bool operator ==(Object other) {
+    return other is Tax && id == other.id;
+  }
 }

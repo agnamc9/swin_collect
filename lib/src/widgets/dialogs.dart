@@ -69,7 +69,7 @@ Future showLoadingDialog(
                 SizedBox(
                     width: 25,
                     height: 25,
-                    child: CircularProgressIndicator()),
+                    child: CircularProgressIndicator(strokeWidth: 1,)),
                 Gap(16),
                 Expanded(child: Text(message)),
               ],

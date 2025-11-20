@@ -9,15 +9,7 @@ Future<ApiResponse<T>> runBlock<T>(Future<ApiResponse<T>> Function() block) asyn
     return response;
   } on DioException catch (e) {
     if (e.response != null && e.response!.data != null) {
-      StringBuffer msg = StringBuffer();
-      if (e.response!.data['message'] is String) {
-        msg.write(e.response!.data['message'] as String);
-      }
-
-      if (e.response!.data['message'] is List) {
-        msg.write((e.response!.data['message'] as List).join("\n"));
-      }
-      return Future.value(ApiResponse(success: false, message: msg.toString()));
+      return Future.value(ApiResponse(success: false, message: e.response!.data['message'] as String));
     }
     final message = getMessageFromException(e);
     return Future.value(ApiResponse(success: false, message: message));

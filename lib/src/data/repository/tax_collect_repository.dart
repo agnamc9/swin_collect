@@ -9,6 +9,8 @@ abstract class TaxCollectRepository {
   Future<ApiResponse<TaxCollect>> getTaxCollects();
 
   Future<ApiResponse<num>> getTotalCollect();
+
+  Future<ApiResponse<TaxCollect>> collectTax(int id);
 }
 
 class TaxCollectRepositoryImpl extends TaxCollectRepository {
@@ -29,6 +31,14 @@ class TaxCollectRepositoryImpl extends TaxCollectRepository {
     return runBlock(() async {
       var totalCollect = await _remoteClient.getAmountCollector();
       return ApiResponse<num>(items: [totalCollect]);
+    });
+  }
+
+  @override
+  Future<ApiResponse<TaxCollect>> collectTax(int id) {
+    return runBlock(() async {
+      var collect = await _remoteClient.collectTax({"contribuableId": id});
+      return ApiResponse<TaxCollect>(items: [collect]);
     });
   }
 }

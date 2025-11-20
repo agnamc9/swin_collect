@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tax_collect/src/presentation/contribuable/contribuable.dart';
 import 'package:tax_collect/src/presentation/tax_collect/screens/screens.dart';
 import 'package:tax_collect/src/widgets/session_observer.dart';
 
@@ -11,13 +12,14 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   final PageController _pageController = PageController();
+  final List<String> _titles = ["Dashboard", "Collectes", "Contribuables", "Profil"];
   int _currentScreenIndex = 0;
 
   @override
   Widget build(BuildContext context) {
     return SessionObserver(
       child: Scaffold(
-        appBar: AppBar(title: Text("Accueil"), centerTitle: true),
+        appBar: AppBar(title: Text(_titles[_currentScreenIndex]), centerTitle: true),
         body: PageView(
           controller: _pageController,
           onPageChanged: (index) {
@@ -26,12 +28,7 @@ class _HomeScreenState extends State<HomeScreen> {
               setState(() {});
             }
           },
-          children: [
-            Container(),
-            TaxCollectScreen(),
-            Container(),
-            Container(),
-          ],
+          children: [Container(), TaxCollectScreen(), ContribuableScreen(), Container()],
         ),
         bottomNavigationBar: BottomNavigationBar(
           items: [
@@ -45,7 +42,6 @@ class _HomeScreenState extends State<HomeScreen> {
             _updatePageIndex(index);
           },
           type: BottomNavigationBarType.fixed,
-
         ),
       ),
     );

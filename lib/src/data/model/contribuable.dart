@@ -11,11 +11,13 @@ class Contribuable {
   String? idIdentity;
   String? photoPath;
   String? createdAt;
-  String? identityType;
+  IdentityType? identityType;
   String? longitude;
   String? latitude;
   String? activite;
   Tax? tax;
+
+  String get fullname => "$lastname $firstname";
 
   Contribuable({
     this.id,
@@ -46,14 +48,16 @@ class Contribuable {
     idIdentity = json['idIdentity'];
     photoPath = json['photoPath'];
     createdAt = json['createdAt'];
-    identityType = json['identityType'];
     longitude = json['longitude'];
     latitude = json['latitude'];
     activite = json['activite'];
     tax = json['tax'] != null ? Tax.fromJson(json['tax']) : null;
+    if (json['idIdentity'] != null) {
+      identityType = json['idIdentity'] is String ? IdentityType(label: json['idIdentity']): IdentityType.fromJson(json['idIdentity']);
+    }
   }
 
-  Map<String, dynamic> toJson() {
+  /*Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = Map<String, dynamic>();
     data['id'] = id;
     data['matricule'] = matricule;
@@ -73,5 +77,5 @@ class Contribuable {
       data['tax'] = tax!.toJson();
     }
     return data;
-  }
+  }*/
 }

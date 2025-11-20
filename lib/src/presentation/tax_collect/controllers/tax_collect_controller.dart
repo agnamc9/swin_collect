@@ -29,6 +29,14 @@ class TaxCollectController extends ChangeNotifier {
 
   ApiResponse<num>? get totalCollectResponse => _totalCollectResponse;
 
+  late TaxCollect _taxCollect;
+
+  TaxCollect get taxCollect => _taxCollect;
+
+  set taxCollect(TaxCollect value) {
+    _taxCollect = value;
+  }
+
   void getTotalCollect() async {
     _totalCollectResponse = null;
     notifyListeners();

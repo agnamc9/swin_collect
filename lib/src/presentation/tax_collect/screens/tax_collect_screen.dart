@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
 import 'package:tax_collect/src/presentation/tax_collect/controllers/controllers.dart';
+import 'package:tax_collect/src/presentation/tax_collect/screens/screens.dart';
 import 'package:tax_collect/src/utils/date_utils.dart';
 import 'package:tax_collect/src/widgets/api_response_view.dart';
 
@@ -29,7 +30,7 @@ class _TaxCollectScreenState extends ConsumerState<TaxCollectScreen> {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(16.0),
-      child:Column(
+      child: Column(
         children: [
           Card(
             child: Padding(
@@ -81,37 +82,40 @@ class _TaxCollectScreenState extends ConsumerState<TaxCollectScreen> {
                     return ListView.separated(
                       itemBuilder: (context, index) {
                         var item = items.elementAt(index);
-                        return Card(
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Row(
-                              children: [
-                                Expanded(
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                                    children: [
-                                      Text(
-                                        "Paiement N°${item.paymentNumber}",
-                                        style: TextStyle(fontWeight: FontWeight.bold),
-                                      ),
-                                      Gap(4),
-                                      Text(item.collectedAt!.toDisplayDate),
-                                    ],
+                        return InkWell(
+                          onTap: (){
+                            _taxCollectController.taxCollect = item;
+                            Navigator.push(context, MaterialPageRoute(builder: (context) => TaxCollectDetailScreen()));
+                          },
+                          child: Card(
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Row(
+                                children: [
+                                  Expanded(
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                                      children: [
+                                        Text(
+                                          "Paiement N°${item.paymentNumber}",
+                                          style: TextStyle(fontWeight: FontWeight.bold),
+                                        ),
+                                        Gap(4),
+                                        Text(item.collectedAt!.toDisplayDate),
+                                      ],
+                                    ),
                                   ),
-                                ),
-                                Gap(8),
-                                Container(
-                                  padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                                  decoration: BoxDecoration(
-                                    color: Colors.green,
-                                    borderRadius: BorderRadius.circular(8),
+                                  Gap(8),
+                                  Container(
+                                    padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                                    decoration: BoxDecoration(
+                                      color: Colors.green,
+                                      borderRadius: BorderRadius.circular(8),
+                                    ),
+                                    child: Text("${item.amountCollected!} Fcfa", style: TextStyle(color: Colors.white)),
                                   ),
-                                  child: Text(
-                                    "${item.amountCollected!} Fcfa",
-                                    style: TextStyle(color: Colors.white),
-                                  ),
-                                ),
-                              ],
+                                ],
+                              ),
                             ),
                           ),
                         );

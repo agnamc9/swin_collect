@@ -70,4 +70,7 @@ abstract class RemoteClient {
 
   @GET("/contribuable/list")
   Future<List<Contribuable>> getContribuables();
+
+  @POST("/taxe/collection/create")
+  Future<TaxCollect> collectTax(@Body() Map<String, dynamic> requuest);
 }

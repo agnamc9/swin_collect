@@ -5,3 +5,4 @@ export 'tax_collect.dart';
 export 'contribuable.dart';
 export 'tax.dart';
 export 'logout_event.dart';
+export 'identity_type.dart';

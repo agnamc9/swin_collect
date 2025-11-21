@@ -11,7 +11,6 @@ abstract class ContribuableRepository {
   Future<ApiResponse> create({
     required String nom,
     required String prenoms,
-    required String matricule,
     required String adresse,
     required String telephone,
     required String activite,
@@ -40,7 +39,6 @@ class ContribuableRepositoryImpl extends ContribuableRepository {
   Future<ApiResponse> create({
     required String nom,
     required String prenoms,
-    required String matricule,
     required String adresse,
     required String telephone,
     required String activite,
@@ -59,10 +57,10 @@ class ContribuableRepositoryImpl extends ContribuableRepository {
         "phoneNumber": telephone,
         "latitude": "${latitude}",
         "longitude": "${longitude}",
-        "photoPath": "",
         "idIdentity": numeroPiece,
         "identityTypeId": identityId,
         "activite": activite,
+        "photoPath": "null",
         "tax": tax,
       });
       return ApiResponse<Contribuable>();

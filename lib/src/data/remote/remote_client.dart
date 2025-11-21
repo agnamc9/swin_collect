@@ -81,5 +81,5 @@ abstract class RemoteClient {
   Future<List<IdentityType>> getIdentityTypes();
 
   @POST("/contribuable/create")
-  Future<Contribuable> createContribuable(@Body() Map<String, Object> map);
+  Future<List<Contribuable>> createContribuable(@Body() Map<String, Object> map);
 }

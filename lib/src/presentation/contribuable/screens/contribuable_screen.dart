@@ -19,6 +19,7 @@ class _ContribuableScreenState extends ConsumerState<ContribuableScreen> {
   @override
   void initState() {
     _contribuableController = ref.read(contribuableControllerProvider);
+    _contribuableController.initQuery();
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _getContribuables();
@@ -33,16 +34,32 @@ class _ContribuableScreenState extends ConsumerState<ContribuableScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            TextField(
-              controller: _searchController,
-              decoration: InputDecoration(
-                hintText: "Rechercher",
-                prefixIcon: Icon(Icons.search),
-                border: OutlineInputBorder(borderSide: BorderSide(color: Colors.black)),
-                filled: true,
-                fillColor: Colors.white,
-              ),
-              obscureText: true,
+            Consumer(
+              builder: (context, ref, child) {
+                _contribuableController = ref.watch(contribuableControllerProvider);
+                return TextField(
+                  controller: _searchController,
+                  decoration: InputDecoration(
+                    hintText: "Rechercher",
+                    prefixIcon: Icon(Icons.search),
+                    border: OutlineInputBorder(borderSide: BorderSide(color: Colors.black)),
+                    filled: true,
+                    fillColor: Colors.white,
+                    suffixIcon: _contribuableController.query.isNotEmpty
+                        ? InkWell(
+                            onTap: () {
+                              _searchController.clear();
+                              _contribuableController.query = null;
+                            },
+                            child: Icon(Icons.close),
+                          )
+                        : null,
+                  ),
+                  onChanged: (value) {
+                    _contribuableController.query = value;
+                  },
+                );
+              },
             ),
             Gap(8),
             Expanded(
@@ -54,9 +71,10 @@ class _ContribuableScreenState extends ConsumerState<ContribuableScreen> {
                     response: response,
                     retry: _getContribuables,
                     responseBuilder: (items) {
+                      var results = _contribuableController.getFilteredContribuables();
                       return ListView.separated(
                         itemBuilder: (context, index) {
-                          var item = items.elementAt(index);
+                          var item = results.elementAt(index);
                           return InkWell(
                             onTap: () {
                               _contribuableController.contribuable = item;
@@ -70,7 +88,10 @@ class _ContribuableScreenState extends ConsumerState<ContribuableScreen> {
                                 padding: const EdgeInsets.all(8.0),
                                 child: Row(
                                   children: [
-                                    CircleAvatar(),
+                                    CircleAvatar(
+                                      backgroundColor: Colors.grey.shade300,
+                                      child: Icon(Icons.person_outline_outlined, color: Colors.grey),
+                                    ),
                                     Gap(8),
                                     Expanded(
                                       child: Column(
@@ -91,7 +112,7 @@ class _ContribuableScreenState extends ConsumerState<ContribuableScreen> {
                           );
                         },
                         separatorBuilder: (_, __) => Gap(8),
-                        itemCount: items.length,
+                        itemCount: results.length,
                       );
                     },
                   );

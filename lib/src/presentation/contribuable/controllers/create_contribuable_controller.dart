@@ -73,7 +73,6 @@ class CreateContribuableController extends ChangeNotifier {
   Future<ApiResponse> createContribuable({
     required String nom,
     required String prenoms,
-    required String matricule,
     required String adresse,
     required String telephone,
     required String activite,
@@ -84,7 +83,6 @@ class CreateContribuableController extends ChangeNotifier {
     return _contribuableRepository.create(
       nom: nom.trim(),
       prenoms: prenoms.trim(),
-      matricule: matricule.trim(),
       adresse: adresse.trim(),
       telephone: telephone.trim(),
       activite: activite.trim(),

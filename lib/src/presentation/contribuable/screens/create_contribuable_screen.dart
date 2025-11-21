@@ -19,7 +19,6 @@ class _CreateContribuableScreenState extends ConsumerState<CreateContribuableScr
   AppLocation? _currentPosition;
   late CreateContribuableController _contribuableController;
 
-  final TextEditingController matriculeController = TextEditingController();
   final TextEditingController nomController = TextEditingController();
   final TextEditingController prenomController = TextEditingController();
   final TextEditingController adresseController = TextEditingController();
@@ -31,7 +30,6 @@ class _CreateContribuableScreenState extends ConsumerState<CreateContribuableScr
   void initState() {
     _contribuableController = ref.read(createContribuableControllerProvider);
     if (kDebugMode) {
-      matriculeController.text = "OBV225";
       nomController.text = "Agnaramon";
       prenomController.text = "Boris";
       adresseController.text = "Angre Soleil 2";
@@ -69,22 +67,6 @@ class _CreateContribuableScreenState extends ConsumerState<CreateContribuableScr
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                TextFormField(
-                  controller: matriculeController,
-                  decoration: InputDecoration(
-                    labelText: "Matricule",
-                    border: OutlineInputBorder(borderSide: BorderSide(color: Colors.black)),
-                    filled: true,
-                    fillColor: Colors.white,
-                    prefixIcon: Icon(Icons.badge_outlined),
-                  ),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return "Le matricule est requis";
-                    }
-                    return null;
-                  },
-                ),
                 Gap(16),
                 TextFormField(
                   controller: nomController,
@@ -387,7 +369,6 @@ class _CreateContribuableScreenState extends ConsumerState<CreateContribuableScr
     var response = await _contribuableController.createContribuable(
       nom: nomController.text,
       prenoms: prenomController.text,
-      matricule: matriculeController.text,
       adresse: adresseController.text,
       telephone: telephoneController.text,
       activite: activiteController.text,
@@ -400,6 +381,9 @@ class _CreateContribuableScreenState extends ConsumerState<CreateContribuableScr
       showInfoDialog(context, message: response.message ?? '');
       return;
     }
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(SnackBar(content: Text("Contribuable crée avec succès"), backgroundColor: Colors.green));
     Navigator.pop(context, true);
   }
 }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
+import 'package:shimmer/shimmer.dart';
 import 'package:tax_collect/src/presentation/tax_collect/controllers/controllers.dart';
 import 'package:tax_collect/src/presentation/tax_collect/screens/screens.dart';
 import 'package:tax_collect/src/utils/date_utils.dart';
@@ -34,7 +35,7 @@ class _TaxCollectScreenState extends ConsumerState<TaxCollectScreen> {
         children: [
           Card(
             child: Padding(
-              padding: const EdgeInsets.all(8.0),
+              padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 8),
               child: Row(
                 children: [
                   Icon(Icons.attach_money_rounded),
@@ -51,12 +52,31 @@ class _TaxCollectScreenState extends ConsumerState<TaxCollectScreen> {
                             var totalCollectResponse = _taxCollectController.totalCollectResponse;
                             return ApiResponseView(
                               response: totalCollectResponse,
+                              loadingView: Align(
+                                alignment: Alignment.centerLeft,
+                                child: Shimmer.fromColors(
+                                  baseColor: Colors.grey,
+                                  highlightColor: Colors.white,
+                                  child: Text(
+                                    '******',
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                                  ),
+                                ),
+                              ),
                               showErrorMessage: false,
                               responseBuilder: (items) {
                                 var totalCollect = items.first;
-                                return Text(
-                                  "${totalCollect} Fcfa",
-                                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                                return Row(
+                                  children: [
+                                    Expanded(
+                                      child: Text(
+                                        "${totalCollect} Fcfa",
+                                        style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                                      ),
+                                    ),
+                                    InkWell(onTap: _getTotalCollect, child: Icon(Icons.refresh_rounded)),
+                                  ],
                                 );
                               },
                             );
@@ -83,7 +103,7 @@ class _TaxCollectScreenState extends ConsumerState<TaxCollectScreen> {
                       itemBuilder: (context, index) {
                         var item = items.elementAt(index);
                         return InkWell(
-                          onTap: (){
+                          onTap: () {
                             _taxCollectController.taxCollect = item;
                             Navigator.push(context, MaterialPageRoute(builder: (context) => TaxCollectDetailScreen()));
                           },

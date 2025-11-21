@@ -18,7 +18,11 @@ class ProfileScreen extends ConsumerWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          CircleAvatar(radius: 30),
+          CircleAvatar(
+            radius: 30,
+            backgroundColor: Colors.grey.shade300,
+            child: Icon(Icons.person_outline_outlined, color: Colors.grey),
+          ),
           const Gap(16),
           Card(
             child: Padding(

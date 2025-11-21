@@ -51,4 +51,33 @@ class ContribuableController extends ChangeNotifier {
     }
     return response;
   }
+
+  late String _query;
+
+  String get query => _query;
+
+  set query(String? value) {
+    _query = value ?? '';
+    notifyListeners();
+  }
+
+  void initQuery() {
+    _query = '';
+  }
+
+  List<Contribuable> getFilteredContribuables() {
+    var results = _contribuableResponse!.items ?? [];
+
+    if (_query.isEmpty) {
+      return results;
+    }
+
+    String _queryLower = _query.toLowerCase();
+
+    return results
+        .where(
+          (c) => c.fullname.toLowerCase().contains(_queryLower) || (c.matricule ?? '').toLowerCase().contains(_queryLower),
+        )
+        .toList();
+  }
 }

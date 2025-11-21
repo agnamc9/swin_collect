@@ -9,7 +9,7 @@ Future<ApiResponse<T>> runBlock<T>(Future<ApiResponse<T>> Function() block) asyn
     return response;
   } on DioException catch (e) {
     if (e.response != null && e.response!.data != null) {
-      return Future.value(ApiResponse(success: false, message: e.response!.data['message'] as String));
+      return Future.value(ApiResponse(success: false, message: ((e.response!.data['message'] ?? e.response!.data['error']) as String)) );
     }
     final message = getMessageFromException(e);
     return Future.value(ApiResponse(success: false, message: message));

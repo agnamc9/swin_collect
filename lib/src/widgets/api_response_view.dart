@@ -9,7 +9,7 @@ class ApiResponseView<T> extends StatelessWidget {
   final Function()? retry;
   final String? emptyMessage;
   final bool showErrorMessage;
-
+  final Widget? loadingView;
   const ApiResponseView({
     super.key,
     required this.responseBuilder,
@@ -17,12 +17,13 @@ class ApiResponseView<T> extends StatelessWidget {
     this.emptyMessage,
     this.retry,
     this.showErrorMessage = true,
+    this.loadingView,
   });
 
   @override
   Widget build(BuildContext context) {
     if (response == null) {
-      return Center(child: CircularProgressIndicator(strokeWidth: 1));
+      return loadingView ?? Center(child: CircularProgressIndicator(strokeWidth: 1));
     }
 
     if (!response!.success!) {

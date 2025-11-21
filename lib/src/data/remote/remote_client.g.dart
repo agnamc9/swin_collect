@@ -246,13 +246,13 @@ class _RemoteClient implements RemoteClient {
   }
 
   @override
-  Future<Contribuable> createContribuable(Map<String, Object> map) async {
+  Future<List<Contribuable>> createContribuable(Map<String, Object> map) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
     final _data = <String, dynamic>{};
     _data.addAll(map);
-    final _options = _setStreamType<Contribuable>(
+    final _options = _setStreamType<List<Contribuable>>(
       Options(method: 'POST', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
@@ -262,10 +262,12 @@ class _RemoteClient implements RemoteClient {
           )
           .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
     );
-    final _result = await _dio.fetch<Map<String, dynamic>>(_options);
-    late Contribuable _value;
+    final _result = await _dio.fetch<List<dynamic>>(_options);
+    late List<Contribuable> _value;
     try {
-      _value = Contribuable.fromJson(_result.data!);
+      _value = _result.data!
+          .map((dynamic i) => Contribuable.fromJson(i as Map<String, dynamic>))
+          .toList();
     } on Object catch (e, s) {
       errorLogger?.logError(e, s, _options, _result);
       rethrow;

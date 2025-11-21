@@ -16,10 +16,13 @@ class TaxCollectScreen extends ConsumerStatefulWidget {
 
 class _TaxCollectScreenState extends ConsumerState<TaxCollectScreen> {
   late TaxCollectController _taxCollectController;
+  final TextEditingController _startDateController = TextEditingController();
+  final TextEditingController _endDateController = TextEditingController();
 
   @override
   void initState() {
     _taxCollectController = ref.read(taxCollectControllerProvider);
+    _taxCollectController.initDates();
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _getTaxes();
@@ -33,6 +36,82 @@ class _TaxCollectScreenState extends ConsumerState<TaxCollectScreen> {
       padding: const EdgeInsets.all(16.0),
       child: Column(
         children: [
+          Consumer(
+            builder: (context, ref, child) {
+              _taxCollectController = ref.watch(taxCollectControllerProvider);
+              _startDateController.text = _taxCollectController.startDate.toDisplayDate;
+              _endDateController.text = _taxCollectController.endDate.toDisplayDate;
+              return Row(
+                children: [
+                  Expanded(
+                    child: TextField(
+                      controller: _startDateController,
+                      decoration: InputDecoration(
+                        labelText: "Date de début",
+                        prefixIcon: Icon(Icons.date_range),
+                        border: OutlineInputBorder(borderSide: BorderSide(color: Colors.black)),
+                        filled: true,
+                        fillColor: Colors.white,
+                      ),
+                      readOnly: true,
+                      onTap: () async {
+                        var result = await showDatePicker(
+                          context: context,
+                          firstDate: DateTime(2025, 01, 01),
+                          lastDate: DateTime.now(),
+                          initialDate: _taxCollectController.startDate,
+                        );
+                        if (result != null) {
+                          _taxCollectController.updateDates(startDate: result);
+                        }
+                      },
+                    ),
+                  ),
+                  Gap(8),
+                  Expanded(
+                    child: TextField(
+                      controller: _endDateController,
+                      decoration: InputDecoration(
+                        labelText: "Date de fin",
+                        prefixIcon: Icon(Icons.date_range),
+                        border: OutlineInputBorder(borderSide: BorderSide(color: Colors.black)),
+                        filled: true,
+                        fillColor: Colors.white,
+                      ),
+                      readOnly: true,
+                      onTap: () async {
+                        var result = await showDatePicker(
+                          context: context,
+                          firstDate: DateTime(2025, 01, 01),
+                          lastDate: DateTime.now(),
+                          initialDate: _taxCollectController.endDate,
+                        );
+                        if (result != null) {
+                          _taxCollectController.updateDates(endDate: result);
+                        }
+                      },
+                    ),
+                  ),
+                ],
+              );
+            },
+          ),
+          Gap(8),
+          InkWell(
+            onTap: () {
+              _taxCollectController.initDates();
+              _getTaxes();
+            },
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text("Réinitialiser les dates", style: TextStyle(color: Colors.grey)),
+                Gap(4),
+                Icon(Icons.refresh_rounded, size: 20, color: Colors.grey),
+              ],
+            ),
+          ),
+          Gap(8),
           Card(
             child: Padding(
               padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 8),
@@ -66,7 +145,7 @@ class _TaxCollectScreenState extends ConsumerState<TaxCollectScreen> {
                               ),
                               showErrorMessage: false,
                               responseBuilder: (items) {
-                                var totalCollect = items.first;
+                                var totalCollect = _taxCollectController.getTotalCollects();
                                 return Row(
                                   children: [
                                     Expanded(
@@ -99,9 +178,13 @@ class _TaxCollectScreenState extends ConsumerState<TaxCollectScreen> {
                   response: response,
                   retry: _getTaxes,
                   responseBuilder: (items) {
+                    var results = _taxCollectController.getFilteredCollects();
+                    if (results.isEmpty) {
+                      return Center(child: Text("Aucune taxe"));
+                    }
                     return ListView.separated(
                       itemBuilder: (context, index) {
-                        var item = items.elementAt(index);
+                        var item = results.elementAt(index);
                         return InkWell(
                           onTap: () {
                             _taxCollectController.taxCollect = item;
@@ -121,7 +204,7 @@ class _TaxCollectScreenState extends ConsumerState<TaxCollectScreen> {
                                           style: TextStyle(fontWeight: FontWeight.bold),
                                         ),
                                         Gap(4),
-                                        Text(item.collectedAt!.toDisplayDate),
+                                        Text(item.collectedAt!.toDisplayDateTime),
                                       ],
                                     ),
                                   ),
@@ -141,7 +224,7 @@ class _TaxCollectScreenState extends ConsumerState<TaxCollectScreen> {
                         );
                       },
                       separatorBuilder: (_, __) => Gap(8),
-                      itemCount: items.length,
+                      itemCount: results.length,
                     );
                   },
                 );

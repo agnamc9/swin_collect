@@ -29,11 +29,11 @@ class _HomeScreenState extends State<HomeScreen> {
               setState(() {});
             }
           },
-          children: [Container(), TaxCollectScreen(), ContribuableScreen(), ProfileScreen()],
+          children: [TaxCollectScreen(), ContribuableScreen(), ProfileScreen()],
         ),
         bottomNavigationBar: BottomNavigationBar(
           items: [
-            BottomNavigationBarItem(icon: Icon(Icons.dashboard), label: "Dashboard"),
+            //BottomNavigationBarItem(icon: Icon(Icons.dashboard), label: "Dashboard"),
             BottomNavigationBarItem(icon: Icon(Icons.monetization_on), label: "Collectes"),
             BottomNavigationBarItem(icon: Icon(Icons.people), label: "Contribuables"),
             BottomNavigationBarItem(icon: Icon(Icons.person), label: "Profil"),

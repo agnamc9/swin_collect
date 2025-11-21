@@ -72,6 +72,9 @@ class _ContribuableScreenState extends ConsumerState<ContribuableScreen> {
                     retry: _getContribuables,
                     responseBuilder: (items) {
                       var results = _contribuableController.getFilteredContribuables();
+                      if (results.isEmpty) {
+                        return Center(child: Text("Aucun contribuable"));
+                      }
                       return ListView.separated(
                         itemBuilder: (context, index) {
                           var item = results.elementAt(index);

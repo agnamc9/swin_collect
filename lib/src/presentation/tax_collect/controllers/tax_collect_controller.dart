@@ -43,4 +43,43 @@ class TaxCollectController extends ChangeNotifier {
     _totalCollectResponse = await _taxCollectRepository.getTotalCollect();
     notifyListeners();
   }
+
+  late DateTime _startDate;
+
+  DateTime get startDate => _startDate;
+
+  late DateTime _endDate;
+
+  DateTime get endDate => _endDate;
+
+  bool _hasDatesChanged = false;
+
+  bool get hasDatesChanged => _hasDatesChanged;
+
+  void initDates() {
+    _endDate = DateTime.now();
+    _startDate = DateTime.now().subtract(Duration(days: 1));
+    _hasDatesChanged = false;
+  }
+
+  updateDates({DateTime? startDate, DateTime? endDate}) {
+    if (startDate != null) _startDate = startDate;
+    if (endDate != null) _endDate = endDate;
+    _hasDatesChanged = true;
+    notifyListeners();
+  }
+
+  List<TaxCollect> getFilteredCollects() {
+    return (_collectsResponse!.items ?? []).where((collect) {
+      var currentDate = DateTime.parse(collect.collectedAt!);
+      return currentDate.isAfter(_startDate) && currentDate.isBefore(_endDate);
+    }).toList();
+  }
+
+  int getTotalCollects() {
+    if (_hasDatesChanged) {
+      return getFilteredCollects().fold(0, (prev, curr) => prev + curr.amountCollected!);
+    }
+    return _totalCollectResponse!.items!.first.toInt();
+  }
 }

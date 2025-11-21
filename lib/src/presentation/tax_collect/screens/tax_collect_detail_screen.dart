@@ -43,7 +43,7 @@ class _TaxCollectDetailScreenState extends ConsumerState<TaxCollectDetailScreen>
                           children: [
                             _buildRowInfo("Numéro de paiement", _taxCollect.paymentNumber!),
                             Container(margin: const EdgeInsets.symmetric(vertical: 8), child: Divider()),
-                            _buildRowInfo("Date et heure", _taxCollect.collectedAt!.toDisplayDate),
+                            _buildRowInfo("Date et heure", _taxCollect.collectedAt!.toDisplayDateTime),
                             Container(margin: const EdgeInsets.symmetric(vertical: 8), child: Divider()),
                             _buildRowInfo("Montant", "${_taxCollect.amountCollected!} Fcfa"),
                           ],

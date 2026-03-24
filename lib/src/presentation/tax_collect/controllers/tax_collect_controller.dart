@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/legacy.dart';
 import 'package:tax_collect/src/data/data.dart';
+import 'package:tax_collect/src/utils/print_utils.dart';
 
 import '../../../data/repository/repository.dart';
 
@@ -81,5 +82,9 @@ class TaxCollectController extends ChangeNotifier {
       return getFilteredCollects().fold(0, (prev, curr) => prev + curr.amountCollected!);
     }
     return _totalCollectResponse!.items!.first.toInt();
+  }
+
+  void printReceipt() {
+    PrintUtils.startPrint(_taxCollect.paymentNumber!);
   }
 }

@@ -24,7 +24,7 @@ android {
         applicationId = "com.softwin_ci.tax_collect"
         // You can update the following values to match your application needs.
         // For more information, see: https://flutter.dev/to/review-gradle-config.
-        minSdk = flutter.minSdkVersion
+        minSdk = 28
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode
         versionName = flutter.versionName
@@ -41,4 +41,8 @@ android {
 
 flutter {
     source = "../.."
+}
+
+dependencies {
+    implementation(files(fileTree("libs") { include("*.jar") }) + files(fileTree("libs") { include("*.aar") }))
 }

@@ -56,7 +56,9 @@ class _TaxCollectDetailScreenState extends ConsumerState<TaxCollectDetailScreen>
             ),
             Gap(8),
             ElevatedButton(
-              onPressed: () {},
+              onPressed: () {
+                _taxCollectController.printReceipt();
+              },
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [

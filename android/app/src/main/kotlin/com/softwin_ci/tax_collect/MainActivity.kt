@@ -73,6 +73,14 @@ class MainActivity : FlutterActivity() {
             spacingInfo.setText("\n")
             mPrinter.addSingleText(spacingInfo)
 
+            val titleInfo = TextInfo()
+            titleInfo.setAlign(PRINT_STYLE_CENTER)
+            titleInfo.setFontSize(26)
+            titleInfo.setText("RECU DE COLLECTE")
+            mPrinter.addSingleText(titleInfo)
+
+            mPrinter.addSingleText(spacingInfo)
+
             // 6. Texte principal (reçu)
             val textInfo = TextInfo()
             textInfo.setAlign(PRINT_STYLE_LEFT)
@@ -80,10 +88,11 @@ class MainActivity : FlutterActivity() {
             textInfo.setText(data)        // ← contenu envoyé depuis Flutter
             mPrinter.addSingleText(textInfo)
 
-            // 7. Ligne de séparation
+            mPrinter.addSingleText(spacingInfo)
+
             textInfo.setAlign(PRINT_STYLE_CENTER)
             textInfo.setFontSize(22)
-            textInfo.setText("_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _")
+            textInfo.setText("Softwin © 2026\n")
             mPrinter.addSingleText(textInfo)
 
             // 8. Lancer l'impression

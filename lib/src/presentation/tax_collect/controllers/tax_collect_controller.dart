@@ -6,14 +6,17 @@ import 'package:tax_collect/src/utils/print_utils.dart';
 import '../../../data/repository/repository.dart';
 
 final taxCollectControllerProvider = ChangeNotifierProvider((ref) {
-  return TaxCollectController(taxCollectRepository: ref.read(taxCollectRepositoryProvider));
+  return TaxCollectController(
+      taxCollectRepository: ref.read(taxCollectRepositoryProvider), userRepository: ref.read(userRepositoryProvider));
 });
 
 class TaxCollectController extends ChangeNotifier {
   final TaxCollectRepository _taxCollectRepository;
+  final UserRepository _userRepository;
 
-  TaxCollectController({required TaxCollectRepository taxCollectRepository})
-    : _taxCollectRepository = taxCollectRepository;
+  TaxCollectController({required TaxCollectRepository taxCollectRepository, required UserRepository userRepository,})
+      : _userRepository = userRepository,
+        _taxCollectRepository = taxCollectRepository;
 
   ApiResponse<TaxCollect>? _collectsResponse;
 
@@ -84,7 +87,10 @@ class TaxCollectController extends ChangeNotifier {
     return _totalCollectResponse!.items!.first.toInt();
   }
 
+  User? _user;
+
   void printReceipt() {
-    PrintUtils.startPrint(_taxCollect.paymentNumber!);
+    _user ??= _userRepository.getUser()!;
+    PrintUtils.startPrint(_taxCollect, _user!);
   }
 }

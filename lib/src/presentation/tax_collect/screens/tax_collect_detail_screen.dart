@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:tax_collect/src/data/model/tax_collect.dart';
 import 'package:tax_collect/src/presentation/tax_collect/controllers/controllers.dart';
+import 'package:tax_collect/src/utils/amount_utils.dart';
 import 'package:tax_collect/src/utils/date_utils.dart';
 
 class TaxCollectDetailScreen extends ConsumerStatefulWidget {
@@ -45,7 +46,7 @@ class _TaxCollectDetailScreenState extends ConsumerState<TaxCollectDetailScreen>
                             Container(margin: const EdgeInsets.symmetric(vertical: 8), child: Divider()),
                             _buildRowInfo("Date et heure", _taxCollect.collectedAt!.toDisplayDateTime),
                             Container(margin: const EdgeInsets.symmetric(vertical: 8), child: Divider()),
-                            _buildRowInfo("Montant", "${_taxCollect.amountCollected!} Fcfa"),
+                            _buildRowInfo("Montant", "${_taxCollect.amountCollected!.formatAmount} Fcfa"),
                           ],
                         ),
                       ),

@@ -4,6 +4,7 @@ import 'package:gap/gap.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:tax_collect/src/presentation/tax_collect/controllers/controllers.dart';
 import 'package:tax_collect/src/presentation/tax_collect/screens/screens.dart';
+import 'package:tax_collect/src/utils/amount_utils.dart';
 import 'package:tax_collect/src/utils/date_utils.dart';
 import 'package:tax_collect/src/widgets/api_response_view.dart';
 
@@ -150,8 +151,8 @@ class _TaxCollectScreenState extends ConsumerState<TaxCollectScreen> {
                                   children: [
                                     Expanded(
                                       child: Text(
-                                        "${totalCollect} Fcfa",
-                                        style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                                        "${totalCollect.formatAmount} Fcfa",
+                                        style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                                       ),
                                     ),
                                     InkWell(onTap: _getTotalCollect, child: Icon(Icons.refresh_rounded)),
@@ -197,7 +198,7 @@ class _TaxCollectScreenState extends ConsumerState<TaxCollectScreen> {
                                 children: [
                                   Expanded(
                                     child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                                      crossAxisAlignment: CrossAxisAlignment.start,
                                       children: [
                                         Text(
                                           "Paiement N°${item.paymentNumber}",
@@ -205,17 +206,17 @@ class _TaxCollectScreenState extends ConsumerState<TaxCollectScreen> {
                                         ),
                                         Gap(4),
                                         Text(item.collectedAt!.toDisplayDateTime),
+                                        Gap(4),
+                                        Container(
+                                          padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                                          decoration: BoxDecoration(
+                                            color: Colors.green,
+                                            borderRadius: BorderRadius.circular(8),
+                                          ),
+                                          child: Text("${item.amountCollected!.formatAmount} Fcfa", style: TextStyle(color: Colors.white)),
+                                        ),
                                       ],
                                     ),
-                                  ),
-                                  Gap(8),
-                                  Container(
-                                    padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                                    decoration: BoxDecoration(
-                                      color: Colors.green,
-                                      borderRadius: BorderRadius.circular(8),
-                                    ),
-                                    child: Text("${item.amountCollected!} Fcfa", style: TextStyle(color: Colors.white)),
                                   ),
                                 ],
                               ),

@@ -3,23 +3,28 @@ import 'package:flutter_riverpod/legacy.dart';
 import 'package:tax_collect/src/data/data.dart';
 
 import '../../../data/repository/repository.dart';
+import '../../../utils/print_utils.dart';
 
 final contribuableControllerProvider = ChangeNotifierProvider((ref) {
   return ContribuableController(
     contribuableRepository: ref.read(contribuableRepositoryProvider),
     taxCollectRepository: ref.read(taxCollectRepositoryProvider),
+    userRepository: ref.read(userRepositoryProvider),
   );
 });
 
 class ContribuableController extends ChangeNotifier {
   final ContribuableRepository _contribuableRepository;
   final TaxCollectRepository _taxCollectRepository;
+  final UserRepository _userRepository;
 
   ContribuableController({
     required ContribuableRepository contribuableRepository,
     required TaxCollectRepository taxCollectRepository,
+    required UserRepository userRepository,
   }) : _contribuableRepository = contribuableRepository,
-       _taxCollectRepository = taxCollectRepository;
+       _taxCollectRepository = taxCollectRepository,
+       _userRepository = userRepository;
 
   ApiResponse<Contribuable>? _contribuableResponse;
 
@@ -49,6 +54,8 @@ class ContribuableController extends ChangeNotifier {
     if (response.success!) {
       _taxCollect = response.items!.first;
     }
+    final user = _userRepository.getUser()!;
+    PrintUtils.startPrint(_taxCollect, user, _contribuable);
     return response;
   }
 
@@ -76,7 +83,8 @@ class ContribuableController extends ChangeNotifier {
 
     return results
         .where(
-          (c) => c.fullname.toLowerCase().contains(_queryLower) || (c.matricule ?? '').toLowerCase().contains(_queryLower),
+          (c) =>
+              c.fullname.toLowerCase().contains(_queryLower) || (c.matricule ?? '').toLowerCase().contains(_queryLower),
         )
         .toList();
   }

@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
@@ -21,8 +22,10 @@ class _SigninScreenState extends ConsumerState<SigninScreen> {
   @override
   void initState() {
     _signinController = ref.read(signinControllerProvider);
-    _usernameController.text = "Test3";
-    _passwordController.text = "12345678Aa";
+    if (kDebugMode) {
+      _usernameController.text = "Test3";
+      _passwordController.text = "12345678Aa";
+    }
     super.initState();
   }
 

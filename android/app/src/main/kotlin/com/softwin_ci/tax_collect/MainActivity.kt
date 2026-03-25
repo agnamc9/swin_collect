@@ -63,7 +63,7 @@ class MainActivity : FlutterActivity() {
             val map = mPrinter.getPrinterStatus()
 
             // 4. Ajouter le logo (depuis assets/)
-            val inputStream = assets.open("grand-zattry-2.png")
+            val inputStream = assets.open("logo-grand-zattry-wb.png")
             val bitmap = BitmapFactory.decodeStream(inputStream)
             mPrinter.addPicture(PRINT_STYLE_CENTER, bitmap)
             inputStream.close()
@@ -78,7 +78,7 @@ class MainActivity : FlutterActivity() {
             val titleInfo = TextInfo()
             titleInfo.setAlign(PRINT_STYLE_CENTER)
             titleInfo.setFontSize(26)
-            titleInfo.setText("RECU DE COLLECTE")
+            titleInfo.setText("REÇU DE COLLECTE")
             mPrinter.addSingleText(titleInfo)
 
             mPrinter.addSingleText(spacingInfo)

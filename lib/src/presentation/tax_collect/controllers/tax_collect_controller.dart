@@ -7,16 +7,24 @@ import '../../../data/repository/repository.dart';
 
 final taxCollectControllerProvider = ChangeNotifierProvider((ref) {
   return TaxCollectController(
-      taxCollectRepository: ref.read(taxCollectRepositoryProvider), userRepository: ref.read(userRepositoryProvider));
+    taxCollectRepository: ref.read(taxCollectRepositoryProvider),
+    userRepository: ref.read(userRepositoryProvider),
+    contribuableRepository: ref.read(contribuableRepositoryProvider),
+  );
 });
 
 class TaxCollectController extends ChangeNotifier {
   final TaxCollectRepository _taxCollectRepository;
   final UserRepository _userRepository;
+  final ContribuableRepository _contribuableRepository;
 
-  TaxCollectController({required TaxCollectRepository taxCollectRepository, required UserRepository userRepository,})
-      : _userRepository = userRepository,
-        _taxCollectRepository = taxCollectRepository;
+  TaxCollectController({
+    required TaxCollectRepository taxCollectRepository,
+    required UserRepository userRepository,
+    required ContribuableRepository contribuableRepository,
+  }) : _taxCollectRepository = taxCollectRepository,
+       _userRepository = userRepository,
+       _contribuableRepository = contribuableRepository;
 
   ApiResponse<TaxCollect>? _collectsResponse;
 
@@ -82,7 +90,10 @@ class TaxCollectController extends ChangeNotifier {
 
   int getTotalCollects() {
     if (_hasDatesChanged) {
-      return getFilteredCollects().fold(0, (prev, curr) => prev + curr.amountCollected!);
+      return getFilteredCollects().fold(
+        0,
+        (prev, curr) => prev + curr.amountCollected!,
+      );
     }
     return _totalCollectResponse!.items!.first.toInt();
   }
@@ -91,6 +102,25 @@ class TaxCollectController extends ChangeNotifier {
 
   void printReceipt() {
     _user ??= _userRepository.getUser()!;
-    PrintUtils.startPrint(_taxCollect, _user!);
+    PrintUtils.startPrint(_taxCollect, _user!, _contribuable);
+  }
+
+  ApiResponse<Contribuable>? _contribuableResponse;
+
+  ApiResponse<Contribuable>? get contribuableResponse => _contribuableResponse;
+
+  late Contribuable _contribuable;
+  Contribuable get contribuable => _contribuable;
+
+  void getContribuable() async {
+    _contribuableResponse = null;
+    notifyListeners();
+    _contribuableResponse = await _contribuableRepository.getContribuable(
+      _taxCollect.contribuableId!,
+    );
+    if (_contribuableResponse!.success!) {
+      _contribuable = _contribuableResponse!.items!.first;
+    }
+    notifyListeners();
   }
 }

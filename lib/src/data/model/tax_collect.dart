@@ -3,16 +3,25 @@ class TaxCollect {
   String? paymentNumber;
   String? collectedAt;
   int? amountCollected;
+  Map<String, dynamic>? contribuable;
 
-  TaxCollect(
-      {this.id, this.paymentNumber, this.collectedAt, this.amountCollected});
+  TaxCollect({
+    this.id,
+    this.paymentNumber,
+    this.collectedAt,
+    this.amountCollected,
+    this.contribuable,
+  });
 
   TaxCollect.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     paymentNumber = json['paymentNumber'];
     collectedAt = json['collectedAt'];
     amountCollected = json['amountCollected'];
+    contribuable = json['contribuable'];
   }
+
+  int? get contribuableId => contribuable?['id'];
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();

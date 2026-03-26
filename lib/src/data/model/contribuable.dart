@@ -53,7 +53,9 @@ class Contribuable {
     activite = json['activite'];
     tax = json['tax'] != null ? Tax.fromJson(json['tax']) : null;
     if (json['idIdentity'] != null) {
-      identityType = json['idIdentity'] is String ? IdentityType(label: json['idIdentity']): IdentityType.fromJson(json['idIdentity']);
+      identityType = json['idIdentity'] is String
+          ? IdentityType(label: json['idIdentity'])
+          : IdentityType.fromJson(json['idIdentity']);
     }
   }
 

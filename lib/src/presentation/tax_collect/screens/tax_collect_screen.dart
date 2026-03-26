@@ -40,8 +40,10 @@ class _TaxCollectScreenState extends ConsumerState<TaxCollectScreen> {
           Consumer(
             builder: (context, ref, child) {
               _taxCollectController = ref.watch(taxCollectControllerProvider);
-              _startDateController.text = _taxCollectController.startDate.toDisplayDate;
-              _endDateController.text = _taxCollectController.endDate.toDisplayDate;
+              _startDateController.text =
+                  _taxCollectController.startDate.toDisplayDate;
+              _endDateController.text =
+                  _taxCollectController.endDate.toDisplayDate;
               return Row(
                 children: [
                   Expanded(
@@ -50,7 +52,9 @@ class _TaxCollectScreenState extends ConsumerState<TaxCollectScreen> {
                       decoration: InputDecoration(
                         labelText: "Date de début",
                         prefixIcon: Icon(Icons.date_range),
-                        border: OutlineInputBorder(borderSide: BorderSide(color: Colors.black)),
+                        border: OutlineInputBorder(
+                          borderSide: BorderSide(color: Colors.black),
+                        ),
                         filled: true,
                         fillColor: Colors.white,
                       ),
@@ -75,7 +79,9 @@ class _TaxCollectScreenState extends ConsumerState<TaxCollectScreen> {
                       decoration: InputDecoration(
                         labelText: "Date de fin",
                         prefixIcon: Icon(Icons.date_range),
-                        border: OutlineInputBorder(borderSide: BorderSide(color: Colors.black)),
+                        border: OutlineInputBorder(
+                          borderSide: BorderSide(color: Colors.black),
+                        ),
                         filled: true,
                         fillColor: Colors.white,
                       ),
@@ -106,7 +112,10 @@ class _TaxCollectScreenState extends ConsumerState<TaxCollectScreen> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Text("Réinitialiser les dates", style: TextStyle(color: Colors.grey)),
+                Text(
+                  "Réinitialiser les dates",
+                  style: TextStyle(color: Colors.grey),
+                ),
                 Gap(4),
                 Icon(Icons.refresh_rounded, size: 20, color: Colors.grey),
               ],
@@ -128,8 +137,11 @@ class _TaxCollectScreenState extends ConsumerState<TaxCollectScreen> {
                         Gap(4),
                         Consumer(
                           builder: (context, ref, child) {
-                            _taxCollectController = ref.watch(taxCollectControllerProvider);
-                            var totalCollectResponse = _taxCollectController.totalCollectResponse;
+                            _taxCollectController = ref.watch(
+                              taxCollectControllerProvider,
+                            );
+                            var totalCollectResponse =
+                                _taxCollectController.totalCollectResponse;
                             return ApiResponseView(
                               response: totalCollectResponse,
                               loadingView: Align(
@@ -140,22 +152,32 @@ class _TaxCollectScreenState extends ConsumerState<TaxCollectScreen> {
                                   child: Text(
                                     '******',
                                     textAlign: TextAlign.center,
-                                    style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                                    style: TextStyle(
+                                      fontSize: 24,
+                                      fontWeight: FontWeight.bold,
+                                    ),
                                   ),
                                 ),
                               ),
                               showErrorMessage: false,
                               responseBuilder: (items) {
-                                var totalCollect = _taxCollectController.getTotalCollects();
+                                var totalCollect = _taxCollectController
+                                    .getTotalCollects();
                                 return Row(
                                   children: [
                                     Expanded(
                                       child: Text(
                                         "${totalCollect.formatAmount} Fcfa",
-                                        style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                                        style: TextStyle(
+                                          fontSize: 20,
+                                          fontWeight: FontWeight.bold,
+                                        ),
                                       ),
                                     ),
-                                    InkWell(onTap: _getTotalCollect, child: Icon(Icons.refresh_rounded)),
+                                    InkWell(
+                                      onTap: _getTotalCollect,
+                                      child: Icon(Icons.refresh_rounded),
+                                    ),
                                   ],
                                 );
                               },
@@ -189,7 +211,12 @@ class _TaxCollectScreenState extends ConsumerState<TaxCollectScreen> {
                         return InkWell(
                           onTap: () {
                             _taxCollectController.taxCollect = item;
-                            Navigator.push(context, MaterialPageRoute(builder: (context) => TaxCollectDetailScreen()));
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => TaxCollectDetailScreen(),
+                              ),
+                            );
                           },
                           child: Card(
                             child: Padding(
@@ -198,22 +225,37 @@ class _TaxCollectScreenState extends ConsumerState<TaxCollectScreen> {
                                 children: [
                                   Expanded(
                                     child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
                                       children: [
                                         Text(
                                           "Paiement N°${item.paymentNumber}",
-                                          style: TextStyle(fontWeight: FontWeight.bold),
+                                          style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                          ),
                                         ),
                                         Gap(4),
-                                        Text(item.collectedAt!.toDisplayDateTime),
+                                        Text(
+                                          item.collectedAt!.toDisplayDateTime,
+                                        ),
                                         Gap(4),
                                         Container(
-                                          padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                                          padding: EdgeInsets.symmetric(
+                                            horizontal: 8,
+                                            vertical: 4,
+                                          ),
                                           decoration: BoxDecoration(
                                             color: Colors.green,
-                                            borderRadius: BorderRadius.circular(8),
+                                            borderRadius: BorderRadius.circular(
+                                              8,
+                                            ),
                                           ),
-                                          child: Text("${item.amountCollected!.formatAmount} Fcfa", style: TextStyle(color: Colors.white)),
+                                          child: Text(
+                                            "${item.amountCollected!.formatAmount} Fcfa",
+                                            style: TextStyle(
+                                              color: Colors.white,
+                                            ),
+                                          ),
                                         ),
                                       ],
                                     ),

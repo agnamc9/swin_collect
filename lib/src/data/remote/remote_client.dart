@@ -29,6 +29,7 @@ final remoteClientProvider = Provider((ref) {
   dio.interceptors.add(
     InterceptorsWrapper(
       onRequest: (option, handler) async {
+        option.headers['JWT_PASSPHRASE'] = '5j409A203E';
         var token = localStorage.getToken();
         if (token != null) {
           option.headers['Authorization'] = 'Bearer $token';
@@ -38,9 +39,7 @@ final remoteClientProvider = Provider((ref) {
       onError: (error, handler) {
         if (error.response?.statusCode == 401) {
           var data = error.response?.data;
-          if (data != null && data['message'] == 'Expired JWT Token') {
-
-          }
+          if (data != null && data['message'] == 'Expired JWT Token') {}
           localStorage.deleteSession();
           eventBus.fire(LogoutEvent());
         }
@@ -71,6 +70,9 @@ abstract class RemoteClient {
   @GET("/contribuable/list")
   Future<List<Contribuable>> getContribuables();
 
+  @GET("/contribuable/{id}")
+  Future<Contribuable> getContribuable(@Path("id") int id);
+
   @POST("/taxe/collection/create")
   Future<TaxCollect> collectTax(@Body() Map<String, dynamic> requuest);
 
@@ -81,5 +83,7 @@ abstract class RemoteClient {
   Future<List<IdentityType>> getIdentityTypes();
 
   @POST("/contribuable/create")
-  Future<List<Contribuable>> createContribuable(@Body() Map<String, Object> map);
+  Future<List<Contribuable>> createContribuable(
+    @Body() Map<String, Object> map,
+  );
 }

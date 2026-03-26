@@ -160,6 +160,33 @@ class _RemoteClient implements RemoteClient {
   }
 
   @override
+  Future<Contribuable> getContribuable(int id) async {
+    final _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{};
+    const Map<String, dynamic>? _data = null;
+    final _options = _setStreamType<Contribuable>(
+      Options(method: 'GET', headers: _headers, extra: _extra)
+          .compose(
+            _dio.options,
+            '/contribuable/${id}',
+            queryParameters: queryParameters,
+            data: _data,
+          )
+          .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
+    );
+    final _result = await _dio.fetch<Map<String, dynamic>>(_options);
+    late Contribuable _value;
+    try {
+      _value = Contribuable.fromJson(_result.data!);
+    } on Object catch (e, s) {
+      errorLogger?.logError(e, s, _options, _result);
+      rethrow;
+    }
+    return _value;
+  }
+
+  @override
   Future<TaxCollect> collectTax(Map<String, dynamic> requuest) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};

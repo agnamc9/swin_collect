@@ -2,11 +2,15 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tax_collect/src/data/data.dart';
 
 final contribuableRepositoryProvider = Provider((ref) {
-  return ContribuableRepositoryImpl(remoteClient: ref.read(remoteClientProvider));
+  return ContribuableRepositoryImpl(
+    remoteClient: ref.read(remoteClientProvider),
+  );
 });
 
 abstract class ContribuableRepository {
   Future<ApiResponse<Contribuable>> getContribuables();
+
+  Future<ApiResponse<Contribuable>> getContribuable(int id);
 
   Future<ApiResponse> create({
     required String nom,
@@ -25,7 +29,8 @@ abstract class ContribuableRepository {
 class ContribuableRepositoryImpl extends ContribuableRepository {
   final RemoteClient _remoteClient;
 
-  ContribuableRepositoryImpl({required RemoteClient remoteClient}) : _remoteClient = remoteClient;
+  ContribuableRepositoryImpl({required RemoteClient remoteClient})
+    : _remoteClient = remoteClient;
 
   @override
   Future<ApiResponse<Contribuable>> getContribuables() {
@@ -64,6 +69,14 @@ class ContribuableRepositoryImpl extends ContribuableRepository {
         "tax": tax,
       });
       return ApiResponse<Contribuable>();
+    });
+  }
+
+  @override
+  Future<ApiResponse<Contribuable>> getContribuable(int id) {
+    return runBlock(() async {
+      var item = await _remoteClient.getContribuable(id);
+      return ApiResponse<Contribuable>(items: [item]);
     });
   }
 }

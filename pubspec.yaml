@@ -1,6 +1,6 @@
 name: tax_collect
 description: "Application de collecte de taxe"
-version: 1.0.0+1
+version: 1.2.0+1
 
 environment:
   sdk: ^3.9.2
@@ -19,6 +19,7 @@ dependencies:
   event_bus: ^2.0.1
   location: ^8.0.1
   shimmer: ^3.0.0
+  package_info_plus: ^9.0.0
 
 dev_dependencies:
   flutter_test:
@@ -27,6 +28,15 @@ dev_dependencies:
   flutter_gen_runner:
   build_runner:
   retrofit_generator: ^10.0.1
+  flutter_launcher_icons: "^0.14.4"
 
 flutter:
   uses-material-design: true
+
+  assets:
+    - assets/
+
+flutter_launcher_icons:
+  android: "launcher_icon"
+  image_path: "assets/hors-taxe.png"
+  min_sdk_android: 21 # android min sdk min:16, default 21

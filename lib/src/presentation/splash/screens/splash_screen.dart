@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:package_info_plus/package_info_plus.dart';
+import 'package:tax_collect/gen/assets.gen.dart';
 import 'package:tax_collect/src/data/data.dart';
 import 'package:tax_collect/src/presentation/home/home.dart';
 import 'package:tax_collect/src/presentation/presentation.dart';
@@ -30,7 +31,9 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Expanded(child: Center(child: CircularProgressIndicator())),
+            Expanded(
+              child: Center(child: Assets.logoGrandZattry.image(width: 200)),
+            ),
             Text(
               appVersion != null ? 'v$appVersion' : '',
               style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
@@ -52,7 +55,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
   }
 
   void runSplash() {
-    Future.delayed(const Duration(seconds: 3), () {
+    Future.delayed(const Duration(seconds: 2), () {
       bool hasSession = ref.read(userRepositoryProvider).getUser() != null;
       Navigator.pushReplacement(
         context,

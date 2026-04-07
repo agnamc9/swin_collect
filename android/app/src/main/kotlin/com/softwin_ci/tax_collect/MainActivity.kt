@@ -71,13 +71,13 @@ class MainActivity : FlutterActivity() {
             // 5. Espacement après logo
             val spacingInfo = TextInfo()
             spacingInfo.setAlign(PRINT_STYLE_CENTER)
-            spacingInfo.setFontSize(16)
+            spacingInfo.setFontSize(14)
             spacingInfo.setText("\n")
-            mPrinter.addSingleText(spacingInfo)
+            // mPrinter.addSingleText(spacingInfo)
 
             val titleInfo = TextInfo()
             titleInfo.setAlign(PRINT_STYLE_CENTER)
-            titleInfo.setFontSize(26)
+            titleInfo.setFontSize(22)
             titleInfo.setText("REÇU DE COLLECTE")
             mPrinter.addSingleText(titleInfo)
 
@@ -86,20 +86,18 @@ class MainActivity : FlutterActivity() {
             // 6. Texte principal (reçu)
             val textInfo = TextInfo()
             textInfo.setAlign(PRINT_STYLE_LEFT)
-            textInfo.setFontSize(22)
+            textInfo.setFontSize(18)
             textInfo.setText(data) // ← contenu envoyé depuis Flutter
             mPrinter.addSingleText(textInfo)
 
             mPrinter.addSingleText(spacingInfo)
 
-            textInfo.setAlign(PRINT_STYLE_CENTER)
-            textInfo.setFontSize(22)
-            textInfo.setText("Softwin © 2026\n")
-            mPrinter.addSingleText(textInfo)
+            val footerInfo = TextInfo()
+            footerInfo.setAlign(PRINT_STYLE_CENTER)
+            footerInfo.setFontSize(14)
+            footerInfo.setText("\n\nMadame le Maire, vous remercie\nSoftwin © 2026")
+            mPrinter.addSingleText(footerInfo)
 
-            
-            val softwinBitmap = BitmapFactory.decodeStream(assets.open("softwin.png"))
-            mPrinter.addPicture(PRINT_STYLE_CENTER, softwinBitmap)
             inputStream.close()
 
             // 8. Lancer l'impression
@@ -111,7 +109,7 @@ class MainActivity : FlutterActivity() {
                         }
 
                         override fun onFinish() {
-                            mPrinter.feedPaper(24) // avancer le papier
+                            mPrinter.feedPaper(8) // avancer le papier
                         }
 
                         override fun onReport(i: Int) {

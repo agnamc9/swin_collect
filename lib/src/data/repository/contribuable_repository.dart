@@ -24,6 +24,8 @@ abstract class ContribuableRepository {
     required double latitude,
     required double longitude,
   });
+
+  Future<ApiResponse<Contribuable>> searchContribuable(String query);
 }
 
 class ContribuableRepositoryImpl extends ContribuableRepository {
@@ -78,5 +80,11 @@ class ContribuableRepositoryImpl extends ContribuableRepository {
       var item = await _remoteClient.getContribuable(id);
       return ApiResponse<Contribuable>(items: [item]);
     });
+  }
+
+  @override
+  Future<ApiResponse<Contribuable>> searchContribuable(String query) {
+    // TODO: implement searchContribuable
+    throw UnimplementedError();
   }
 }

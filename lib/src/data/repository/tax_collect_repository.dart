@@ -16,10 +16,13 @@ abstract class TaxCollectRepository {
 class TaxCollectRepositoryImpl extends TaxCollectRepository {
   final RemoteClient _remoteClient;
 
-  TaxCollectRepositoryImpl({required RemoteClient remoteClient}) : _remoteClient = remoteClient;
+  TaxCollectRepositoryImpl({required RemoteClient remoteClient})
+    : _remoteClient = remoteClient;
 
   @override
-  Future<ApiResponse<TaxCollect>> getTaxCollects() {
+  Future<ApiResponse<TaxCollect>> getTaxCollects() async {
+    var items = await _remoteClient.getTaxCollects();
+    return ApiResponse<TaxCollect>(items: items);
     return runBlock(() async {
       var items = await _remoteClient.getTaxCollects();
       return ApiResponse<TaxCollect>(items: items);

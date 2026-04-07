@@ -13,14 +13,22 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   final PageController _pageController = PageController();
-  final List<String> _titles = ["Dashboard", "Collectes", "Contribuables", "Profil"];
+  final List<String> _titles = [
+    "Dashboard",
+    "Collectes",
+    "Contribuables",
+    "Profil",
+  ];
   int _currentScreenIndex = 0;
 
   @override
   Widget build(BuildContext context) {
     return SessionObserver(
       child: Scaffold(
-        appBar: AppBar(title: Text(_titles[_currentScreenIndex]), centerTitle: true),
+        appBar: AppBar(
+          title: Text(_titles[_currentScreenIndex]),
+          centerTitle: true,
+        ),
         body: PageView(
           controller: _pageController,
           onPageChanged: (index) {
@@ -34,8 +42,14 @@ class _HomeScreenState extends State<HomeScreen> {
         bottomNavigationBar: BottomNavigationBar(
           items: [
             //BottomNavigationBarItem(icon: Icon(Icons.dashboard), label: "Dashboard"),
-            BottomNavigationBarItem(icon: Icon(Icons.monetization_on), label: "Collectes"),
-            BottomNavigationBarItem(icon: Icon(Icons.people), label: "Contribuables"),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.monetization_on),
+              label: "Collectes",
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.people),
+              label: "Contribuables",
+            ),
             BottomNavigationBarItem(icon: Icon(Icons.person), label: "Profil"),
           ],
           currentIndex: _currentScreenIndex,

@@ -84,8 +84,13 @@ class ContribuableController extends ChangeNotifier {
     return results
         .where(
           (c) =>
-              c.fullname.toLowerCase().contains(_queryLower) || (c.matricule ?? '').toLowerCase().contains(_queryLower),
+              c.fullname.toLowerCase().contains(_queryLower) ||
+              (c.matricule ?? '').toLowerCase().contains(_queryLower),
         )
         .toList();
+  }
+
+  Future<ApiResponse<Contribuable>> searchContribuable(String text) async {
+    return _contribuableRepository.searchContribuable(text);
   }
 }

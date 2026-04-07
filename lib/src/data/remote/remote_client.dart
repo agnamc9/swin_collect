@@ -86,4 +86,10 @@ abstract class RemoteClient {
   Future<List<Contribuable>> createContribuable(
     @Body() Map<String, Object> map,
   );
+
+  @POST("/journal-caisse/cloturer")
+  Future<CashierStatus> closeCashier(@Body() Map<String, Object> map);
+
+  @GET("/journal-caisse/today")
+  Future<CashierStatus> getCashierStatus();
 }

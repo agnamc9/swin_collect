@@ -1,6 +1,6 @@
-- [TESTING] Ajouter la collecte du jour en cours par défaut
-- [TESTING] Faire la clôture de caisse :  Ismael et Boris
-- [A TESTER] Réduire le ticket de collecte en enlevant les espaces, mettre madame le maire vous remercie, supprimer le logo de SOFTWIN et laisser copyright SOFTWIN au bas du ticket 
-- [A TESTER] + pour faire nouvelle collecte sur le Dashboard 
-- [A TESTER] Champ non renseigné obligatoire , alerter l'utilisateur creation contribuable
-- Ne plus collecter quelqu’un en fonction de la période
+- [DONE] Ajouter la collecte du jour en cours par défaut
+- [DONE] Faire la clôture de caisse :  Ismael et Boris
+- [TESTING] Réduire le ticket de collecte en enlevant les espaces, mettre madame le maire vous remercie, supprimer le logo de SOFTWIN et laisser copyright SOFTWIN au bas du ticket 
+- [DONE] + pour faire nouvelle collecte sur le Dashboard 
+- [DONE] Champ non renseigné obligatoire , alerter l'utilisateur creation contribuable
+- [PENDING] Ne plus collecter quelqu’un en fonction de la période

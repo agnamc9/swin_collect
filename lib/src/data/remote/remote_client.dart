@@ -71,7 +71,7 @@ abstract class RemoteClient {
   Future<List<Contribuable>> getContribuables();
 
   @GET("/contribuable/{id}")
-  Future<Contribuable> getContribuable(@Path("id") int id);
+  Future<Contribuable> getContribuable(@Path("id") String id);
 
   @POST("/taxe/collection/create")
   Future<TaxCollect> collectTax(@Body() Map<String, dynamic> requuest);

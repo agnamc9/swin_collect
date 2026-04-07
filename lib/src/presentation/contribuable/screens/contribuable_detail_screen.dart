@@ -6,15 +6,18 @@ import 'package:tax_collect/src/data/model/tax_collect.dart';
 import 'package:tax_collect/src/presentation/contribuable/contribuable.dart';
 import 'package:tax_collect/src/presentation/home/home.dart';
 import 'package:tax_collect/src/presentation/tax_collect/controllers/controllers.dart';
+import 'package:tax_collect/src/utils/amount_utils.dart';
 import 'package:tax_collect/src/utils/date_utils.dart';
 import 'package:tax_collect/src/widgets/dialogs.dart';
 
 class ContribuableDetailScreen extends ConsumerStatefulWidget {
   @override
-  ConsumerState<ContribuableDetailScreen> createState() => _ContribuableDetailScreenState();
+  ConsumerState<ContribuableDetailScreen> createState() =>
+      _ContribuableDetailScreenState();
 }
 
-class _ContribuableDetailScreenState extends ConsumerState<ContribuableDetailScreen> {
+class _ContribuableDetailScreenState
+    extends ConsumerState<ContribuableDetailScreen> {
   late ContribuableController _contribuableController;
   late Contribuable _contribuable;
 
@@ -39,17 +42,58 @@ class _ContribuableDetailScreenState extends ConsumerState<ContribuableDetailScr
                   padding: const EdgeInsets.all(12.0),
                   child: Column(
                     children: [
-                      Center(child: CircleAvatar(radius: 30)),
+                      Center(
+                        child: CircleAvatar(
+                          backgroundColor: Colors.grey.shade300,
+                          radius: 30,
+                          child: Icon(
+                            Icons.person_outline_outlined,
+                            color: Colors.grey,
+                            size: 30,
+                          ),
+                        ),
+                      ),
                       Gap(16),
                       _buildRowInfo("Nom et prénoms", _contribuable.fullname),
-                      Container(margin: const EdgeInsets.symmetric(vertical: 8), child: Divider()),
-                      _buildRowInfo("Matricule", _contribuable.matricule!),
-                      Container(margin: const EdgeInsets.symmetric(vertical: 8), child: Divider()),
-                      _buildRowInfo("Téléphone", _contribuable.phoneNumber!),
-                      Container(margin: const EdgeInsets.symmetric(vertical: 8), child: Divider()),
-                      _buildRowInfo("Nom du commerce", _contribuable.activite!),
-                      Container(margin: const EdgeInsets.symmetric(vertical: 8), child: Divider()),
-                      _buildRowInfo("Montant de la collecte", "${_contribuable.tax!.taux!.toInt()} FCFA"),
+                      Container(
+                        margin: const EdgeInsets.symmetric(vertical: 8),
+                        child: Divider(),
+                      ),
+                      _buildRowInfo("Matricule", _contribuable.matricule ?? ''),
+                      Container(
+                        margin: const EdgeInsets.symmetric(vertical: 8),
+                        child: Divider(),
+                      ),
+                      _buildRowInfo(
+                        "Téléphone",
+                        _contribuable.phoneNumber ?? '',
+                      ),
+                      Container(
+                        margin: const EdgeInsets.symmetric(vertical: 8),
+                        child: Divider(),
+                      ),
+                      _buildRowInfo(
+                        "Nom du commerce",
+                        _contribuable.activite ?? '',
+                      ),
+                      if (_contribuable.tax != null) ...[
+                        Container(
+                          margin: const EdgeInsets.symmetric(vertical: 8),
+                          child: Divider(),
+                        ),
+                        _buildRowInfo(
+                          "Montant de la collecte",
+                          "${_contribuable.tax!.taux!.toInt().formatAmount} FCFA",
+                        ),
+                        Container(
+                          margin: const EdgeInsets.symmetric(vertical: 8),
+                          child: Divider(),
+                        ),
+                        _buildRowInfo(
+                          "Periodicité",
+                          _contribuable.tax!.periodicite ?? '',
+                        ),
+                      ],
                     ],
                   ),
                 ),
@@ -59,7 +103,8 @@ class _ContribuableDetailScreenState extends ConsumerState<ContribuableDetailScr
                 onPressed: () async {
                   var result = await showInfoDialog(
                     context,
-                    message: "Confirmer la collecte de ${_contribuable.tax!.taux!.toInt()} Fcfa",
+                    message:
+                        "Confirmer la collecte de ${_contribuable.tax!.taux!.toInt()} Fcfa",
                     positiveLabel: "OUI",
                     negativeLabel: "NON",
                   );
@@ -99,13 +144,12 @@ class _ContribuableDetailScreenState extends ConsumerState<ContribuableDetailScr
     showLoadingDialog(context);
     var response = await _contribuableController.collectTax();
     Navigator.pop(context);
-    if (!response.success!) {
-      showInfoDialog(context, message: response.message ?? '');
-      return;
-    }
-    ScaffoldMessenger.of(
+    await showInfoDialog(context, message: response.message ?? '');
+    if (!response.success!) return;
+    Navigator.pushAndRemoveUntil(
       context,
-    ).showSnackBar(SnackBar(content: Text("Collecte effectuée avec succès"), backgroundColor: Colors.green));
-    Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => HomeScreen()), (route) => false);
+      MaterialPageRoute(builder: (context) => HomeScreen()),
+      (route) => false,
+    );
   }
 }

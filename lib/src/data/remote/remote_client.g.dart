@@ -160,7 +160,7 @@ class _RemoteClient implements RemoteClient {
   }
 
   @override
-  Future<Contribuable> getContribuable(int id) async {
+  Future<Contribuable> getContribuable(String id) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};

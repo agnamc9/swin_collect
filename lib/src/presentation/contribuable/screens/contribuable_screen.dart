@@ -36,13 +36,17 @@ class _ContribuableScreenState extends ConsumerState<ContribuableScreen> {
           children: [
             Consumer(
               builder: (context, ref, child) {
-                _contribuableController = ref.watch(contribuableControllerProvider);
+                _contribuableController = ref.watch(
+                  contribuableControllerProvider,
+                );
                 return TextField(
                   controller: _searchController,
                   decoration: InputDecoration(
                     hintText: "Rechercher",
                     prefixIcon: Icon(Icons.search),
-                    border: OutlineInputBorder(borderSide: BorderSide(color: Colors.black)),
+                    border: OutlineInputBorder(
+                      borderSide: BorderSide(color: Colors.black),
+                    ),
                     filled: true,
                     fillColor: Colors.white,
                     suffixIcon: _contribuableController.query.isNotEmpty
@@ -65,13 +69,16 @@ class _ContribuableScreenState extends ConsumerState<ContribuableScreen> {
             Expanded(
               child: Consumer(
                 builder: (context, ref, child) {
-                  _contribuableController = ref.watch(contribuableControllerProvider);
+                  _contribuableController = ref.watch(
+                    contribuableControllerProvider,
+                  );
                   var response = _contribuableController.contribuableResponse;
                   return ApiResponseView(
                     response: response,
                     retry: _getContribuables,
                     responseBuilder: (items) {
-                      var results = _contribuableController.getFilteredContribuables();
+                      var results = _contribuableController
+                          .getFilteredContribuables();
                       if (results.isEmpty) {
                         return Center(child: Text("Aucun contribuable"));
                       }
@@ -83,7 +90,10 @@ class _ContribuableScreenState extends ConsumerState<ContribuableScreen> {
                               _contribuableController.contribuable = item;
                               Navigator.push(
                                 context,
-                                MaterialPageRoute(builder: (context) => ContribuableDetailScreen()),
+                                MaterialPageRoute(
+                                  builder: (context) =>
+                                      ContribuableDetailScreen(),
+                                ),
                               );
                             },
                             child: Card(
@@ -93,16 +103,23 @@ class _ContribuableScreenState extends ConsumerState<ContribuableScreen> {
                                   children: [
                                     CircleAvatar(
                                       backgroundColor: Colors.grey.shade300,
-                                      child: Icon(Icons.person_outline_outlined, color: Colors.grey),
+                                      child: Icon(
+                                        Icons.person_outline_outlined,
+                                        color: Colors.grey,
+                                      ),
                                     ),
                                     Gap(8),
                                     Expanded(
                                       child: Column(
-                                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.stretch,
                                         children: [
                                           Text(
                                             item.fullname,
-                                            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                                            style: TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 16,
+                                            ),
                                           ),
                                           Text(item.matricule ?? ""),
                                         ],

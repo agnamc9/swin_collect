@@ -10,7 +10,7 @@ final contribuableRepositoryProvider = Provider((ref) {
 abstract class ContribuableRepository {
   Future<ApiResponse<Contribuable>> getContribuables();
 
-  Future<ApiResponse<Contribuable>> getContribuable(int id);
+  Future<ApiResponse<Contribuable>> getContribuable(String id);
 
   Future<ApiResponse> create({
     required String nom,
@@ -24,8 +24,6 @@ abstract class ContribuableRepository {
     required double latitude,
     required double longitude,
   });
-
-  Future<ApiResponse<Contribuable>> searchContribuable(String query);
 }
 
 class ContribuableRepositoryImpl extends ContribuableRepository {
@@ -75,16 +73,10 @@ class ContribuableRepositoryImpl extends ContribuableRepository {
   }
 
   @override
-  Future<ApiResponse<Contribuable>> getContribuable(int id) {
+  Future<ApiResponse<Contribuable>> getContribuable(String id) {
     return runBlock(() async {
       var item = await _remoteClient.getContribuable(id);
       return ApiResponse<Contribuable>(items: [item]);
     });
-  }
-
-  @override
-  Future<ApiResponse<Contribuable>> searchContribuable(String query) {
-    // TODO: implement searchContribuable
-    throw UnimplementedError();
   }
 }

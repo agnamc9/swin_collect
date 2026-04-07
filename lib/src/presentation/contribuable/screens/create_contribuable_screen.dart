@@ -32,12 +32,12 @@ class _CreateContribuableScreenState
   void initState() {
     _contribuableController = ref.read(createContribuableControllerProvider);
     if (kDebugMode) {
-      nomController.text = "Agnaramon";
-      prenomController.text = "Boris";
-      adresseController.text = "Angre Soleil 2";
-      telephoneController.text = "0748701586";
-      activiteController.text = "Commercant";
-      numeroPieceController.text = "CI14393";
+      // nomController.text = "Agnaramon";
+      // prenomController.text = "Boris";
+      // adresseController.text = "Angre Soleil 2";
+      // telephoneController.text = "0748701586";
+      // activiteController.text = "Commercant";
+      // numeroPieceController.text = "CI14393";
     }
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {

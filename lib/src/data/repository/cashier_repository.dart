@@ -18,7 +18,9 @@ class CashierRepositoryImpl extends CashierRepository {
     : _remoteClient = remoteClient;
 
   @override
-  Future<ApiResponse<CashierStatus>> getCashierStatus() {
+  Future<ApiResponse<CashierStatus>> getCashierStatus() async {
+    var item = await _remoteClient.getCashierStatus();
+    return ApiResponse<CashierStatus>(items: [item]);
     return runBlock(() async {
       var item = await _remoteClient.getCashierStatus();
       return ApiResponse<CashierStatus>(items: [item]);

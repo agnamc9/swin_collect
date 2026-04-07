@@ -68,37 +68,23 @@ class MainActivity : FlutterActivity() {
             mPrinter.addPicture(PRINT_STYLE_CENTER, bitmap)
             inputStream.close()
 
-            // 5. Espacement après logo
-            val spacingInfo = TextInfo()
-            spacingInfo.setAlign(PRINT_STYLE_CENTER)
-            spacingInfo.setFontSize(14)
-            spacingInfo.setText("\n")
-            // mPrinter.addSingleText(spacingInfo)
-
             val titleInfo = TextInfo()
             titleInfo.setAlign(PRINT_STYLE_CENTER)
             titleInfo.setFontSize(22)
             titleInfo.setText("REÇU DE COLLECTE")
             mPrinter.addSingleText(titleInfo)
 
-            mPrinter.addSingleText(spacingInfo)
-
-            // 6. Texte principal (reçu)
             val textInfo = TextInfo()
             textInfo.setAlign(PRINT_STYLE_LEFT)
-            textInfo.setFontSize(18)
-            textInfo.setText(data) // ← contenu envoyé depuis Flutter
+            textInfo.setFontSize(20)
+            textInfo.setText(data)
             mPrinter.addSingleText(textInfo)
-
-            mPrinter.addSingleText(spacingInfo)
 
             val footerInfo = TextInfo()
             footerInfo.setAlign(PRINT_STYLE_CENTER)
-            footerInfo.setFontSize(14)
-            footerInfo.setText("\n\nMadame le Maire, vous remercie\nSoftwin © 2026")
+            footerInfo.setFontSize(18)
+            footerInfo.setText("MADAME LE MAIRE VOUS REMERCIE\nSOFTWIN © 2026")
             mPrinter.addSingleText(footerInfo)
-
-            inputStream.close()
 
             // 8. Lancer l'impression
             mPrinter.startPrinting(

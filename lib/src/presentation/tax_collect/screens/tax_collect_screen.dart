@@ -40,12 +40,13 @@ class _TaxCollectScreenState extends ConsumerState<TaxCollectScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(8.0),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Consumer(
               builder: (_, ref, __) {
-                _taxCollectController = ref.read(taxCollectControllerProvider);
+                _taxCollectController = ref.watch(taxCollectControllerProvider);
                 final cashierResponse =
                     _taxCollectController.cashierStatusResponse;
                 final totalCollectResponse =
@@ -57,24 +58,32 @@ class _TaxCollectScreenState extends ConsumerState<TaxCollectScreen> {
                         success:
                             (cashierResponse.success ?? false) &&
                             (totalCollectResponse.success ?? false),
+                        items:
+                            cashierResponse != null && cashierResponse!.success!
+                            ? cashierResponse.items
+                            : null,
                       );
                 return ApiResponseView(
                   response: response,
                   retry: _getCashierStatus,
                   responseBuilder: (items) {
                     final item = items.first;
+                    final isClosed = !item.isOpen;
                     return ElevatedButton(
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: item.isOpen
-                            ? Colors.grey.shade200
-                            : null,
+                        backgroundColor: isClosed ? Colors.grey.shade200 : null,
+                        foregroundColor: isClosed
+                            ? Colors.grey.shade600
+                            : Colors.white,
                         textStyle: TextStyle(
                           fontSize: 14,
-                          color: item.isOpen ? Colors.grey : Colors.white,
+                          fontWeight: isClosed
+                              ? FontWeight.bold
+                              : FontWeight.normal,
                         ),
                       ),
                       onPressed: () async {
-                        if (item.isOpen) return;
+                        if (isClosed) return;
                         final response = await showInfoDialog(
                           context,
                           message: "Voulez-vous clôturer la caisse ?",
@@ -86,16 +95,19 @@ class _TaxCollectScreenState extends ConsumerState<TaxCollectScreen> {
                         }
                       },
                       child: Text(
-                        item.isOpen ? "Caisse clôturée" : "Clôturer la caisse",
+                        isClosed ? "Caisse clôturée" : "Clôturer la caisse",
                       ),
                     );
                   },
                 );
               },
             ),
-            Gap(4),
+            Gap(8),
             Text(
-              DateFormat('EEEE dd MMMM yyyy').format(DateTime.now()),
+              DateFormat(
+                'EEEE dd MMMM yyyy',
+                'fr_FR',
+              ).format(DateTime.now()).toUpperCase(),
               style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
               textAlign: TextAlign.center,
             ),

@@ -119,7 +119,7 @@ class TaxCollectController extends ChangeNotifier {
     _contribuableResponse = null;
     notifyListeners();
     _contribuableResponse = await _contribuableRepository.getContribuable(
-      _taxCollect.contribuableId!,
+      _taxCollect.contribuableId!.toString(),
     );
     if (_contribuableResponse!.success!) {
       _contribuable = _contribuableResponse!.items!.first;

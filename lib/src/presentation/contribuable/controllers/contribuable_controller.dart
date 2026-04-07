@@ -53,9 +53,9 @@ class ContribuableController extends ChangeNotifier {
     var response = await _taxCollectRepository.collectTax(_contribuable.id!);
     if (response.success!) {
       _taxCollect = response.items!.first;
+      final user = _userRepository.getUser()!;
+      PrintUtils.startPrint(_taxCollect, user, _contribuable);
     }
-    final user = _userRepository.getUser()!;
-    PrintUtils.startPrint(_taxCollect, user, _contribuable);
     return response;
   }
 
@@ -90,7 +90,11 @@ class ContribuableController extends ChangeNotifier {
         .toList();
   }
 
-  Future<ApiResponse<Contribuable>> searchContribuable(String text) async {
-    return _contribuableRepository.searchContribuable(text);
+  Future<ApiResponse<Contribuable>> searchContribuable(String query) async {
+    final response = await _contribuableRepository.getContribuable(query);
+    if (response.success!) {
+      _contribuable = response.items!.first;
+    }
+    return response;
   }
 }

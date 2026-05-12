@@ -32,12 +32,11 @@ class _CreateContribuableScreenState extends ConsumerState<CreateContribuableScr
   void initState() {
     _contribuableController = ref.read(createContribuableControllerProvider);
     if (kDebugMode) {
-      // nomController.text = "Agnaramon";
-      // prenomController.text = "Boris";
-      // adresseController.text = "Angre Soleil 2";
-      // telephoneController.text = "0748701586";
-      // activiteController.text = "Commercant";
-      // numeroPieceController.text = "CI14393";
+      nomController.text = "Tony";
+      prenomController.text = "Herb";
+      adresseController.text = "2 Plateaux";
+      telephoneController.text = "0748229444";
+      numeroPieceController.text = "CI14393";
     }
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -444,7 +443,7 @@ class _CreateContribuableScreenState extends ConsumerState<CreateContribuableScr
                               child: Text(
                                 _currentPosition == null
                                     ? "Position non définie"
-                                    : "${_currentPosition!.lng};${_currentPosition!.lng}",
+                                    : "${_currentPosition!.lat};${_currentPosition!.lng}",
                                 style: TextStyle(color: _currentPosition == null ? Colors.grey : Colors.black),
                               ),
                             ),

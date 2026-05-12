@@ -15,7 +15,7 @@ class _HomeScreenState extends State<HomeScreen> {
   final PageController _pageController = PageController();
   final List<String> _titles = [
     "Dashboard",
-    "Collectes",
+    "Contribuables",
     "Contribuables",
     "Profil",
   ];

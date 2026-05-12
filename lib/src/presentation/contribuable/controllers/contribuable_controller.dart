@@ -26,9 +26,9 @@ class ContribuableController extends ChangeNotifier {
        _taxCollectRepository = taxCollectRepository,
        _userRepository = userRepository;
 
-  ApiResponse<Contribuable>? _contribuableResponse;
+  ApiResponse<Contribuable>? _contribuablesResponse;
 
-  ApiResponse<Contribuable>? get contribuableResponse => _contribuableResponse;
+  ApiResponse<Contribuable>? get contribuablesResponse => _contribuablesResponse;
 
   late Contribuable _contribuable;
 
@@ -39,9 +39,9 @@ class ContribuableController extends ChangeNotifier {
   }
 
   getContribuables() async {
-    _contribuableResponse = null;
+    _contribuablesResponse = null;
     notifyListeners();
-    _contribuableResponse = await _contribuableRepository.getContribuables();
+    _contribuablesResponse = await _contribuableRepository.getContribuables();
     notifyListeners();
   }
 
@@ -73,7 +73,7 @@ class ContribuableController extends ChangeNotifier {
   }
 
   List<Contribuable> getFilteredContribuables() {
-    var results = _contribuableResponse!.items ?? [];
+    var results = _contribuablesResponse!.items ?? [];
 
     if (_query.isEmpty) {
       return results;
@@ -84,8 +84,7 @@ class ContribuableController extends ChangeNotifier {
     return results
         .where(
           (c) =>
-              c.fullname.toLowerCase().contains(_queryLower) ||
-              (c.matricule ?? '').toLowerCase().contains(_queryLower),
+              c.fullname.toLowerCase().contains(_queryLower) || (c.matricule ?? '').toLowerCase().contains(_queryLower),
         )
         .toList();
   }
@@ -96,5 +95,28 @@ class ContribuableController extends ChangeNotifier {
       _contribuable = response.items!.first;
     }
     return response;
+  }
+
+  Future<ApiResponse<Coordinate>> updateLocation(AppLocation position) async {
+    return _contribuableRepository.updateLocation(position.lat, position.lng, _contribuable.id!);
+  }
+
+  ApiResponse<Contribuable>? _contribuableResponse;
+
+  ApiResponse<Contribuable>? get contribuableResponse => _contribuableResponse;
+
+  void getContribuableInfo([bool refresh = false]) async {
+    if (!refresh) {
+      _contribuableResponse = ApiResponse(items: [_contribuable]);
+      notifyListeners();
+      return;
+    }
+    _contribuablesResponse = null;
+    notifyListeners();
+    _contribuableResponse = await _contribuableRepository.getContribuable("${_contribuable.id!}");
+    if (_contribuableResponse!.success!) {
+      _contribuable = _contribuableResponse!.items!.first;
+    }
+    notifyListeners();
   }
 }

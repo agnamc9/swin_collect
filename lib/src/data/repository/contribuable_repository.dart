@@ -25,6 +25,8 @@ abstract class ContribuableRepository {
     required String typeContribuable,
     int? superficie,
   });
+
+  Future<ApiResponse<Coordinate>> updateLocation(double latitude, double longitude, int contribuableId);
 }
 
 class ContribuableRepositoryImpl extends ContribuableRepository {
@@ -72,7 +74,7 @@ class ContribuableRepositoryImpl extends ContribuableRepository {
         "quartier": quartier,
         "tax": tax,
         if (superficie != null) "superficie": superficie,
-        "typeContribuable": typeContribuable,
+        "typeContribuable": [typeContribuable.toUpperCase()],
       });
       return ApiResponse<Contribuable>();
     });
@@ -83,6 +85,17 @@ class ContribuableRepositoryImpl extends ContribuableRepository {
     return runBlock(() async {
       var item = await _remoteClient.getContribuable(id);
       return ApiResponse<Contribuable>(items: [item]);
+    });
+  }
+
+  @override
+  Future<ApiResponse<Coordinate>> updateLocation(double latitude, double longitude, int contribuableId) {
+    return runBlock(() async {
+      var item = await _remoteClient.updateContribuableLocation(
+        Coordinate(latitude: "$latitude", longitude: "$longitude"),
+        contribuableId,
+      );
+      return ApiResponse<Coordinate>(items: [item]);
     });
   }
 }

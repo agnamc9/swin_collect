@@ -16,6 +16,7 @@ class Contribuable {
   String? latitude;
   List<dynamic>? activite;
   TaxType? tax;
+  List<String>? typeContribuable;
 
   String get fullname => "$lastname $firstname";
 
@@ -51,6 +52,7 @@ class Contribuable {
     longitude = json['longitude'];
     latitude = json['latitude'];
     activite = json['activite'];
+    typeContribuable = json['typeContribuable'] != null ? List<String>.from(json['typeContribuable']) : null;
     tax = json['tax'] != null ? TaxType.fromJson(json['tax']) : null;
     if (json['idIdentity'] != null) {
       identityType = json['idIdentity'] is String
@@ -58,6 +60,8 @@ class Contribuable {
           : IdentityType.fromJson(json['idIdentity']);
     }
   }
+
+  bool get hasLocation => latitude != null && longitude != null;
 
   /*Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = Map<String, dynamic>();

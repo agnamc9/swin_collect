@@ -180,8 +180,10 @@ class _ContribuableDetailScreenState extends ConsumerState<ContribuableDetailScr
     showLoadingDialog(context);
     var response = await _contribuableController.collectTax();
     Navigator.pop(context);
-    await showInfoDialog(context, message: response.message ?? '');
-    if (!response.success!) return;
+    if (!response.success!) {
+      showInfoDialog(context, message: response.message ?? '');
+      return;
+    }
     Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => HomeScreen()), (route) => false);
   }
 

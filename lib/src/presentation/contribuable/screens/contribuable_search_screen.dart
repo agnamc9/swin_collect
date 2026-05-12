@@ -7,12 +7,10 @@ class ContribuableSearchScreen extends ConsumerStatefulWidget {
   const ContribuableSearchScreen({super.key});
 
   @override
-  ConsumerState<ContribuableSearchScreen> createState() =>
-      _TaxCollectSearchScreenState();
+  ConsumerState<ContribuableSearchScreen> createState() => _TaxCollectSearchScreenState();
 }
 
-class _TaxCollectSearchScreenState
-    extends ConsumerState<ContribuableSearchScreen> {
+class _TaxCollectSearchScreenState extends ConsumerState<ContribuableSearchScreen> {
   final TextEditingController _searchController = TextEditingController();
 
   late ContribuableController _contribuableController;
@@ -37,9 +35,7 @@ class _TaxCollectSearchScreenState
               decoration: InputDecoration(
                 hintText: "Matricule ou nom...",
                 prefixIcon: Icon(Icons.search),
-                border: OutlineInputBorder(
-                  borderSide: BorderSide(color: Colors.black),
-                ),
+                border: OutlineInputBorder(borderSide: BorderSide(color: Colors.black)),
                 filled: true,
                 fillColor: Colors.white,
               ),
@@ -48,11 +44,9 @@ class _TaxCollectSearchScreenState
             ElevatedButton(
               onPressed: () {
                 if (_searchController.text.isEmpty) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text("Veuillez entrer un matricule ou un nom"),
-                    ),
-                  );
+                  ScaffoldMessenger.of(
+                    context,
+                  ).showSnackBar(SnackBar(content: Text("Veuillez entrer un matricule ou un nom")));
                   return;
                 }
                 _search();
@@ -67,20 +61,12 @@ class _TaxCollectSearchScreenState
 
   void _search() async {
     showLoadingDialog(context);
-    var response = await _contribuableController.searchContribuable(
-      _searchController.text,
-    );
+    var response = await _contribuableController.searchContribuable(_searchController.text);
     Navigator.pop(context);
     if (response.success!) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => ContribuableDetailScreen()),
-      );
+      Navigator.push(context, MaterialPageRoute(builder: (context) => ContribuableDetailScreen()));
       return;
     }
-    showInfoDialog(
-      context,
-      message: response.message ?? "Erreur lors de la recherche",
-    );
+    showInfoDialog(context, message: response.message ?? "Erreur lors de la recherche");
   }
 }

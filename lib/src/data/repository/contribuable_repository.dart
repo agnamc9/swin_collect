@@ -2,9 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tax_collect/src/data/data.dart';
 
 final contribuableRepositoryProvider = Provider((ref) {
-  return ContribuableRepositoryImpl(
-    remoteClient: ref.read(remoteClientProvider),
-  );
+  return ContribuableRepositoryImpl(remoteClient: ref.read(remoteClientProvider));
 });
 
 abstract class ContribuableRepository {
@@ -17,20 +15,22 @@ abstract class ContribuableRepository {
     required String prenoms,
     required String adresse,
     required String telephone,
-    required String activite,
     required String numeroPiece,
-    required num tax,
+    required int tax,
+    required int quartier,
+    required int activite,
     required int identityId,
     required double latitude,
     required double longitude,
+    required String typeContribuable,
+    int? superficie,
   });
 }
 
 class ContribuableRepositoryImpl extends ContribuableRepository {
   final RemoteClient _remoteClient;
 
-  ContribuableRepositoryImpl({required RemoteClient remoteClient})
-    : _remoteClient = remoteClient;
+  ContribuableRepositoryImpl({required RemoteClient remoteClient}) : _remoteClient = remoteClient;
 
   @override
   Future<ApiResponse<Contribuable>> getContribuables() {
@@ -46,12 +46,15 @@ class ContribuableRepositoryImpl extends ContribuableRepository {
     required String prenoms,
     required String adresse,
     required String telephone,
-    required String activite,
     required String numeroPiece,
-    required num tax,
+    required int tax,
+    required int quartier,
+    required int activite,
     required int identityId,
     required double latitude,
     required double longitude,
+    required String typeContribuable,
+    int? superficie,
   }) {
     return runBlock(() async {
       var result = await _remoteClient.createContribuable({
@@ -60,13 +63,16 @@ class ContribuableRepositoryImpl extends ContribuableRepository {
         "address": adresse,
         "ville": "",
         "phoneNumber": telephone,
-        "latitude": "${latitude}",
-        "longitude": "${longitude}",
+        "latitude": "$latitude",
+        "longitude": "$longitude",
+        "photoPath": "null",
         "idIdentity": numeroPiece,
         "identityTypeId": identityId,
         "activite": activite,
-        "photoPath": "null",
+        "quartier": quartier,
         "tax": tax,
+        if (superficie != null) "superficie": superficie,
+        "typeContribuable": typeContribuable,
       });
       return ApiResponse<Contribuable>();
     });

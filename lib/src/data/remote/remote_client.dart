@@ -76,20 +76,27 @@ abstract class RemoteClient {
   @POST("/taxe/collection/create")
   Future<TaxCollect> collectTax(@Body() Map<String, dynamic> requuest);
 
-  @GET("/tax/list")
-  Future<List<Tax>> getTaxes();
-
   @GET("/identity-type/list")
   Future<List<IdentityType>> getIdentityTypes();
 
   @POST("/contribuable/create")
-  Future<List<Contribuable>> createContribuable(
-    @Body() Map<String, Object> map,
-  );
+  Future<List<Contribuable>> createContribuable(@Body() Map<String, Object> map);
 
   @POST("/journal-caisse/cloturer")
   Future<CashierStatus> closeCashier(@Body() Map<String, Object> map);
 
   @GET("/journal-caisse/today")
   Future<CashierStatus> getCashierStatus();
+
+  @GET("/activite/list")
+  Future<List<BusinessActivity>> getBusinessActivities();
+
+  @GET("/tax/list")
+  Future<List<TaxType>> getTaxTypes();
+
+  @GET("/quartier/list")
+  Future<List<Neighborhood>> getNeighborhoods();
+
+  @PUT("/contribuable/{id}/localisation")
+  Future<Coordinate> updateContribuableLocation(@Body() Coordinate coordinate, @Path("id") int id);
 }

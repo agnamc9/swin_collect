@@ -1,9 +1,11 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
 import 'package:tax_collect/src/data/data.dart';
 import 'package:tax_collect/src/presentation/contribuable/contribuable.dart';
+import 'package:tax_collect/src/utils/amount_utils.dart';
 import 'package:tax_collect/src/utils/location_utils.dart';
 import 'package:tax_collect/src/widgets/dialogs.dart';
 
@@ -11,12 +13,10 @@ class CreateContribuableScreen extends ConsumerStatefulWidget {
   const CreateContribuableScreen({Key? key}) : super(key: key);
 
   @override
-  ConsumerState<CreateContribuableScreen> createState() =>
-      _CreateContribuableScreenState();
+  ConsumerState<CreateContribuableScreen> createState() => _CreateContribuableScreenState();
 }
 
-class _CreateContribuableScreenState
-    extends ConsumerState<CreateContribuableScreen> {
+class _CreateContribuableScreenState extends ConsumerState<CreateContribuableScreen> {
   final _formKey = GlobalKey<FormState>();
   AppLocation? _currentPosition;
   late CreateContribuableController _contribuableController;
@@ -25,8 +25,8 @@ class _CreateContribuableScreenState
   final TextEditingController prenomController = TextEditingController();
   final TextEditingController adresseController = TextEditingController();
   final TextEditingController telephoneController = TextEditingController();
-  final TextEditingController activiteController = TextEditingController();
   final TextEditingController numeroPieceController = TextEditingController();
+  final TextEditingController superficieCtrl = TextEditingController();
 
   @override
   void initState() {
@@ -43,6 +43,8 @@ class _CreateContribuableScreenState
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _getTaxes();
       _getIdentityTypes();
+      _getNeighborHoods();
+      _getActivities();
     });
   }
 
@@ -74,13 +76,13 @@ class _CreateContribuableScreenState
                   controller: nomController,
                   decoration: InputDecoration(
                     labelText: "Nom",
-                    border: OutlineInputBorder(
-                      borderSide: BorderSide(color: Colors.black),
-                    ),
+                    border: OutlineInputBorder(borderSide: BorderSide(color: Colors.black)),
                     filled: true,
                     fillColor: Colors.white,
                     prefixIcon: Icon(Icons.person_outline),
                   ),
+                  textCapitalization: TextCapitalization.words,
+                  keyboardType: TextInputType.text,
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return "Le nom est requis";
@@ -93,13 +95,13 @@ class _CreateContribuableScreenState
                   controller: prenomController,
                   decoration: InputDecoration(
                     labelText: "Prénoms",
-                    border: OutlineInputBorder(
-                      borderSide: BorderSide(color: Colors.black),
-                    ),
+                    border: OutlineInputBorder(borderSide: BorderSide(color: Colors.black)),
                     filled: true,
                     fillColor: Colors.white,
                     prefixIcon: Icon(Icons.person_outline),
                   ),
+                  textCapitalization: TextCapitalization.words,
+                  keyboardType: TextInputType.text,
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return "Le prénom est requis";
@@ -108,17 +110,55 @@ class _CreateContribuableScreenState
                   },
                 ),
                 Gap(16),
+                Consumer(
+                  builder: (context, ref, child) {
+                    _contribuableController = ref.watch(createContribuableControllerProvider);
+                    var response = _contribuableController.neighborHoodResponse;
+                    var item = _contribuableController.neighborHood;
+                    return DropdownButtonFormField<Neighborhood>(
+                      initialValue: item,
+                      decoration: InputDecoration(
+                        labelText: "Quartier",
+                        border: OutlineInputBorder(borderSide: BorderSide(color: Colors.black)),
+                        filled: true,
+                        fillColor: Colors.white,
+                        prefixIcon: Icon(Icons.pin_drop_outlined),
+                        suffixIcon: response == null
+                            ? SizedBox(width: 5, height: 5, child: CircularProgressIndicator(strokeWidth: 1))
+                            : (!response.success!
+                                  ? InkWell(onTap: _getIdentityTypes, child: Icon(Icons.refresh_rounded))
+                                  : null),
+                      ),
+                      items: (response?.items ?? [])
+                          .map((e) => DropdownMenuItem(value: e, child: Text(e.label!)))
+                          .toList(),
+                      onChanged: (value) {
+                        if (response == null) return;
+                        if (value == null) return;
+                        _contribuableController.neighborHood = value;
+                      },
+                      isExpanded: true,
+                      validator: (value) {
+                        if (value == null) {
+                          return "Veuillez sélectionner le quartier";
+                        }
+                        return null;
+                      },
+                    );
+                  },
+                ),
+                Gap(16),
                 TextFormField(
                   controller: adresseController,
                   decoration: InputDecoration(
                     labelText: "Adresse",
-                    border: OutlineInputBorder(
-                      borderSide: BorderSide(color: Colors.black),
-                    ),
+                    border: OutlineInputBorder(borderSide: BorderSide(color: Colors.black)),
                     filled: true,
                     fillColor: Colors.white,
                     prefixIcon: Icon(Icons.pin_drop_outlined),
                   ),
+                  textCapitalization: TextCapitalization.sentences,
+                  keyboardType: TextInputType.text,
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return "L'adresse est requise";
@@ -131,9 +171,7 @@ class _CreateContribuableScreenState
                   controller: telephoneController,
                   decoration: InputDecoration(
                     labelText: "Numéro de téléphone",
-                    border: OutlineInputBorder(
-                      borderSide: BorderSide(color: Colors.black),
-                    ),
+                    border: OutlineInputBorder(borderSide: BorderSide(color: Colors.black)),
                     filled: true,
                     fillColor: Colors.white,
                     prefixIcon: Icon(Icons.phone_outlined),
@@ -143,24 +181,10 @@ class _CreateContribuableScreenState
                     if (value == null || value.isEmpty) {
                       return "Le numéro de téléphone est requis";
                     }
-                    return null;
-                  },
-                ),
-                Gap(16),
-                TextFormField(
-                  controller: activiteController,
-                  decoration: InputDecoration(
-                    labelText: "Activité",
-                    border: OutlineInputBorder(
-                      borderSide: BorderSide(color: Colors.black),
-                    ),
-                    filled: true,
-                    fillColor: Colors.white,
-                    prefixIcon: Icon(Icons.work_outline),
-                  ),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return "L'activité est requise";
+                    try {
+                      int.parse(value.trim());
+                    } catch (e) {
+                      return "Le numéro est invalide";
                     }
                     return null;
                   },
@@ -168,43 +192,63 @@ class _CreateContribuableScreenState
                 Gap(16),
                 Consumer(
                   builder: (context, ref, child) {
-                    _contribuableController = ref.watch(
-                      createContribuableControllerProvider,
+                    _contribuableController = ref.watch(createContribuableControllerProvider);
+                    var response = _contribuableController.activityResponse;
+                    var item = _contribuableController.activity;
+                    return DropdownButtonFormField<BusinessActivity>(
+                      initialValue: item,
+                      decoration: InputDecoration(
+                        labelText: "Activité",
+                        border: OutlineInputBorder(borderSide: BorderSide(color: Colors.black)),
+                        filled: true,
+                        fillColor: Colors.white,
+                        prefixIcon: Icon(Icons.account_balance_wallet_outlined),
+                        suffixIcon: response == null
+                            ? SizedBox(width: 5, height: 5, child: CircularProgressIndicator(strokeWidth: 1))
+                            : (!response.success!
+                                  ? InkWell(onTap: _getIdentityTypes, child: Icon(Icons.refresh_rounded))
+                                  : null),
+                      ),
+                      items: (response?.items ?? [])
+                          .map((e) => DropdownMenuItem(value: e, child: Text(e.label!)))
+                          .toList(),
+                      onChanged: (value) {
+                        if (response == null) return;
+                        if (value == null) return;
+                        _contribuableController.activity = value;
+                      },
+                      isExpanded: true,
+                      validator: (value) {
+                        if (value == null) {
+                          return "Veuillez sélectionner l'activité";
+                        }
+                        return null;
+                      },
                     );
+                  },
+                ),
+                Gap(16),
+                Consumer(
+                  builder: (context, ref, child) {
+                    _contribuableController = ref.watch(createContribuableControllerProvider);
                     var response = _contribuableController.identityResponse;
                     var item = _contribuableController.identityType;
                     return DropdownButtonFormField<IdentityType>(
                       initialValue: item,
                       decoration: InputDecoration(
                         labelText: "Type de pièce",
-                        border: OutlineInputBorder(
-                          borderSide: BorderSide(color: Colors.black),
-                        ),
+                        border: OutlineInputBorder(borderSide: BorderSide(color: Colors.black)),
                         filled: true,
                         fillColor: Colors.white,
                         prefixIcon: Icon(Icons.account_balance_wallet_outlined),
                         suffixIcon: response == null
-                            ? SizedBox(
-                                width: 5,
-                                height: 5,
-                                child: CircularProgressIndicator(
-                                  strokeWidth: 1,
-                                ),
-                              )
+                            ? SizedBox(width: 5, height: 5, child: CircularProgressIndicator(strokeWidth: 1))
                             : (!response.success!
-                                  ? InkWell(
-                                      onTap: _getIdentityTypes,
-                                      child: Icon(Icons.refresh_rounded),
-                                    )
+                                  ? InkWell(onTap: _getIdentityTypes, child: Icon(Icons.refresh_rounded))
                                   : null),
                       ),
                       items: (response?.items ?? [])
-                          .map(
-                            (e) => DropdownMenuItem(
-                              value: e,
-                              child: Text(e.label!),
-                            ),
-                          )
+                          .map((e) => DropdownMenuItem(value: e, child: Text(e.label!)))
                           .toList(),
                       onChanged: (value) {
                         if (response == null) return;
@@ -226,9 +270,7 @@ class _CreateContribuableScreenState
                   controller: numeroPieceController,
                   decoration: InputDecoration(
                     labelText: "Numéro de pièce",
-                    border: OutlineInputBorder(
-                      borderSide: BorderSide(color: Colors.black),
-                    ),
+                    border: OutlineInputBorder(borderSide: BorderSide(color: Colors.black)),
                     filled: true,
                     fillColor: Colors.white,
                     prefixIcon: Icon(Icons.work_outline),
@@ -243,49 +285,29 @@ class _CreateContribuableScreenState
                 Gap(16),
                 Consumer(
                   builder: (context, ref, child) {
-                    _contribuableController = ref.watch(
-                      createContribuableControllerProvider,
-                    );
+                    _contribuableController = ref.watch(createContribuableControllerProvider);
                     var response = _contribuableController.taxesResponse;
                     var item = _contribuableController.tax;
                     return Column(
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
-                        DropdownButtonFormField<Tax>(
+                        DropdownButtonFormField<TaxType>(
                           initialValue: item,
                           decoration: InputDecoration(
                             labelText: "Nature de la taxe",
-                            border: OutlineInputBorder(
-                              borderSide: BorderSide(color: Colors.black),
-                            ),
+                            border: OutlineInputBorder(borderSide: BorderSide(color: Colors.black)),
                             filled: true,
                             fillColor: Colors.white,
-                            prefixIcon: Icon(
-                              Icons.account_balance_wallet_outlined,
-                            ),
+                            prefixIcon: Icon(Icons.account_balance_wallet_outlined),
                             suffixIcon: response == null
-                                ? SizedBox(
-                                    width: 5,
-                                    height: 5,
-                                    child: CircularProgressIndicator(
-                                      strokeWidth: 1,
-                                    ),
-                                  )
+                                ? SizedBox(width: 5, height: 5, child: CircularProgressIndicator(strokeWidth: 1))
                                 : (!response.success!
-                                      ? InkWell(
-                                          onTap: _getIdentityTypes,
-                                          child: Icon(Icons.refresh_rounded),
-                                        )
+                                      ? InkWell(onTap: _getIdentityTypes, child: Icon(Icons.refresh_rounded))
                                       : null),
                           ),
                           isExpanded: true,
                           items: (response?.items ?? [])
-                              .map(
-                                (e) => DropdownMenuItem(
-                                  value: e,
-                                  child: Text(e.natureTaxe!),
-                                ),
-                              )
+                              .map((e) => DropdownMenuItem(value: e, child: Text("${e.typeTaxe!} | ${e.periodicite!}")))
                               .toList(),
                           onChanged: (value) {
                             if (response == null) return;
@@ -306,17 +328,11 @@ class _CreateContribuableScreenState
                               Expanded(
                                 child: RichText(
                                   text: TextSpan(
-                                    style: TextStyle(
-                                      color: Colors.black,
-                                      fontWeight: FontWeight.bold,
-                                    ),
+                                    style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
                                     text: "Périodicité : ",
                                     children: [
                                       TextSpan(
-                                        style: TextStyle(
-                                          color: Colors.black,
-                                          fontWeight: FontWeight.normal,
-                                        ),
+                                        style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
                                         text: item.periodicite!,
                                       ),
                                     ],
@@ -326,17 +342,11 @@ class _CreateContribuableScreenState
                               Expanded(
                                 child: RichText(
                                   text: TextSpan(
-                                    style: TextStyle(
-                                      color: Colors.black,
-                                      fontWeight: FontWeight.bold,
-                                    ),
+                                    style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
                                     text: "Type : ",
                                     children: [
                                       TextSpan(
-                                        style: TextStyle(
-                                          color: Colors.black,
-                                          fontWeight: FontWeight.normal,
-                                        ),
+                                        style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
                                         text: item.typeTaux!,
                                       ),
                                     ],
@@ -347,17 +357,11 @@ class _CreateContribuableScreenState
                           ),
                           RichText(
                             text: TextSpan(
-                              style: TextStyle(
-                                color: Colors.black,
-                                fontWeight: FontWeight.bold,
-                              ),
+                              style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
                               text: "Valeur : ",
                               children: [
                                 TextSpan(
-                                  style: TextStyle(
-                                    color: Colors.black,
-                                    fontWeight: FontWeight.normal,
-                                  ),
+                                  style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
                                   text: item.typeTaux == "POURCENTAGE"
                                       ? "${item.taux!}%"
                                       : "${item.taux!.toInt()} Fcfa",
@@ -366,7 +370,62 @@ class _CreateContribuableScreenState
                             ),
                           ),
                         ],
+                        if (item != null && item.isOdp) ...[
+                          Gap(16),
+                          TextFormField(
+                            controller: superficieCtrl,
+                            keyboardType: TextInputType.phone,
+                            decoration: InputDecoration(
+                              labelText: "Superficie (m²)",
+                              border: OutlineInputBorder(borderSide: BorderSide(color: Colors.black)),
+                              filled: true,
+                              fillColor: Colors.white,
+                              prefixIcon: Icon(Icons.pin_drop_outlined),
+                            ),
+                            validator: (value) {
+                              if (!item.isOdp) return null;
+                              if (value == null || value.isEmpty) return "La superficie est requise";
+                              try {
+                                final int superficie = int.parse(superficieCtrl.text.trim());
+                                if (superficie <= 0) {
+                                  return "La superficie doit-être supérieure à 0";
+                                }
+                              } catch (e) {
+                                return "La superficie est invalide";
+                              }
+                              return null;
+                            },
+                            onChanged: (value) {
+                              _contribuableController.superficie = value;
+                            },
+                          ),
+                          Gap(8),
+                          Text(
+                            "Montant calculé : ${_contribuableController.taxOdpAmount == 0 ? '-' : '${_contribuableController.taxOdpAmount.formatAmount} Fcfa'}",
+                          ),
+                        ],
                       ],
+                    );
+                  },
+                ),
+                Gap(16),
+                Text("Type de contribuable", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+                Consumer(
+                  builder: (context, ref, child) {
+                    _contribuableController = ref.watch(createContribuableControllerProvider);
+                    return RadioGroup<String>(
+                      onChanged: (value) {
+                        _contribuableController.contribuableType = value;
+                      },
+                      groupValue: _contribuableController.contribuableType,
+                      child: Row(
+                        children: [
+                          Radio<String>(value: "Fixe"),
+                          Expanded(child: Text("Fixe")),
+                          Radio<String>(value: "Ambulant"),
+                          Expanded(child: Text("Ambulant")),
+                        ],
+                      ),
                     );
                   },
                 ),
@@ -377,13 +436,7 @@ class _CreateContribuableScreenState
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
-                        Text(
-                          "Position GPS",
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 16,
-                          ),
-                        ),
+                        Text("Position GPS", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
                         Gap(16),
                         Row(
                           children: [
@@ -392,11 +445,7 @@ class _CreateContribuableScreenState
                                 _currentPosition == null
                                     ? "Position non définie"
                                     : "${_currentPosition!.lng};${_currentPosition!.lng}",
-                                style: TextStyle(
-                                  color: _currentPosition == null
-                                      ? Colors.grey
-                                      : Colors.black,
-                                ),
+                                style: TextStyle(color: _currentPosition == null ? Colors.grey : Colors.black),
                               ),
                             ),
                             ElevatedButton(
@@ -405,11 +454,7 @@ class _CreateContribuableScreenState
                               },
                               child: Row(
                                 mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  Icon(Icons.location_searching_outlined),
-                                  Gap(4),
-                                  Text("Obtenir position"),
-                                ],
+                                children: [Icon(Icons.location_searching_outlined), Gap(4), Text("Obtenir position")],
                               ),
                             ),
                           ],
@@ -446,6 +491,11 @@ class _CreateContribuableScreenState
       return false;
     }
 
+    if (_contribuableController.neighborHood == null) {
+      showInfoDialog(context, message: "Veuillez sélectionner le quartier");
+      return false;
+    }
+
     if (adresseController.text.isEmpty) {
       showInfoDialog(context, message: "L'adresse est requise");
       return false;
@@ -456,16 +506,20 @@ class _CreateContribuableScreenState
       return false;
     }
 
-    if (activiteController.text.isEmpty) {
-      showInfoDialog(context, message: "L'activité est requise");
+    try {
+      int.parse(telephoneController.text.trim());
+    } catch (e) {
+      showInfoDialog(context, message: "Le téléphone est invalide");
+      return false;
+    }
+
+    if (_contribuableController.activity == null) {
+      showInfoDialog(context, message: "Veuillez sélectionner l'activité");
       return false;
     }
 
     if (_contribuableController.identityType == null) {
-      showInfoDialog(
-        context,
-        message: "Veuillez sélectionner le type de pièce",
-      );
+      showInfoDialog(context, message: "Veuillez sélectionner le type de pièce");
       return false;
     }
 
@@ -475,10 +529,29 @@ class _CreateContribuableScreenState
     }
 
     if (_contribuableController.tax == null) {
-      showInfoDialog(
-        context,
-        message: "Veuillez sélectionner la nature de la taxe",
-      );
+      showInfoDialog(context, message: "Veuillez sélectionner la nature de la taxe");
+      return false;
+    }
+
+    if (_contribuableController.tax!.isOdp) {
+      if (superficieCtrl.text.isEmpty) {
+        showInfoDialog(context, message: "La superficie est requise");
+        return false;
+      }
+      try {
+        final int superficie = int.parse(superficieCtrl.text.trim());
+        if (superficie <= 0) {
+          showInfoDialog(context, message: "La superficie doit-être supérieure à 0");
+          return false;
+        }
+      } catch (e) {
+        showInfoDialog(context, message: "La superficie est invalide");
+        return false;
+      }
+    }
+
+    if (_contribuableController.contribuableType == null) {
+      showInfoDialog(context, message: "Veuillez sélectionner le type de contribuable");
       return false;
     }
 
@@ -505,7 +578,6 @@ class _CreateContribuableScreenState
       prenoms: prenomController.text,
       adresse: adresseController.text,
       telephone: telephoneController.text,
-      activite: activiteController.text,
       numeroPiece: numeroPieceController.text,
       latitude: _currentPosition!.lat,
       longitude: _currentPosition!.lng,
@@ -515,12 +587,17 @@ class _CreateContribuableScreenState
       showInfoDialog(context, message: response.message ?? '');
       return;
     }
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text("Contribuable crée avec succès"),
-        backgroundColor: Colors.green,
-      ),
-    );
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(SnackBar(content: Text("Contribuable crée avec succès"), backgroundColor: Colors.green));
     Navigator.pop(context, true);
+  }
+
+  void _getNeighborHoods() {
+    _contribuableController.getNeighborHoods();
+  }
+
+  void _getActivities() {
+    _contribuableController.getActivities();
   }
 }

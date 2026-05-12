@@ -6,7 +6,7 @@ final taxRepositoryProvider = Provider((ref) {
 });
 
 abstract class TaxRepository {
-  Future<ApiResponse<Tax>> getTaxes();
+  Future<ApiResponse<TaxType>> getTaxes();
 }
 
 class TaxRepositoryImpl extends TaxRepository {
@@ -15,10 +15,10 @@ class TaxRepositoryImpl extends TaxRepository {
   TaxRepositoryImpl({required RemoteClient remoteClient}) : _remoteClient = remoteClient;
 
   @override
-  Future<ApiResponse<Tax>> getTaxes() {
+  Future<ApiResponse<TaxType>> getTaxes() {
     return runBlock(() async {
-      var items = await _remoteClient.getTaxes();
-      return ApiResponse<Tax>(items: items);
+      var items = await _remoteClient.getTaxTypes();
+      return ApiResponse<TaxType>(items: items);
     });
   }
 }

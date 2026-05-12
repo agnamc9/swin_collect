@@ -14,8 +14,8 @@ class Contribuable {
   IdentityType? identityType;
   String? longitude;
   String? latitude;
-  String? activite;
-  Tax? tax;
+  List<dynamic>? activite;
+  TaxType? tax;
 
   String get fullname => "$lastname $firstname";
 
@@ -51,7 +51,7 @@ class Contribuable {
     longitude = json['longitude'];
     latitude = json['latitude'];
     activite = json['activite'];
-    tax = json['tax'] != null ? Tax.fromJson(json['tax']) : null;
+    tax = json['tax'] != null ? TaxType.fromJson(json['tax']) : null;
     if (json['idIdentity'] != null) {
       identityType = json['idIdentity'] is String
           ? IdentityType(label: json['idIdentity'])

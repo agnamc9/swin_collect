@@ -19,19 +19,23 @@ class MainActivity : FlutterActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        wisePosSdk = WisePosSdk.getInstance()
-        wisePosSdk!!.initPosSdk(
-                this,
-                object : InitPosSdkListener {
-                    override fun onInitPosSuccess() {
-                        Log.d("sdkdemo", "initPosSdk: success!")
-                    }
+        try {
+            wisePosSdk = WisePosSdk.getInstance()
+            wisePosSdk.initPosSdk(
+                    this,
+                    object : InitPosSdkListener {
+                        override fun onInitPosSuccess() {
+                            Log.d("sdkdemo", "initPosSdk: success!")
+                        }
 
-                    override fun onInitPosFail(i: Int) {
-                        Log.d("sdkdemo", "initPosSdk: fail!")
+                        override fun onInitPosFail(i: Int) {
+                            Log.d("sdkdemo", "initPosSdk: fail!")
+                        }
                     }
-                }
-        )
+            )
+        } catch (e: Exception) {
+            Log.e("sdkdemo", "initPosSdk: RemoteException", e)
+        }
     }
 
     override fun configureFlutterEngine(@NonNull flutterEngine: FlutterEngine) {

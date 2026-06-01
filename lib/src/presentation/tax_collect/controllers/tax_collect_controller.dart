@@ -92,10 +92,7 @@ class TaxCollectController extends ChangeNotifier {
 
   int getTotalCollects() {
     if (_hasDatesChanged) {
-      return getFilteredCollects().fold(
-        0,
-        (prev, curr) => prev + curr.amountCollected!,
-      );
+      return getFilteredCollects().fold(0, (prev, curr) => prev + curr.amountCollected!);
     }
     return _totalCollectResponse!.items!.first.toInt();
   }
@@ -118,9 +115,7 @@ class TaxCollectController extends ChangeNotifier {
   void getContribuable() async {
     _contribuableResponse = null;
     notifyListeners();
-    _contribuableResponse = await _contribuableRepository.getContribuable(
-      _taxCollect.contribuableId!.toString(),
-    );
+    _contribuableResponse = await _contribuableRepository.getContribuable(_taxCollect.contribuableId!.toString());
     if (_contribuableResponse!.success!) {
       _contribuable = _contribuableResponse!.items!.first;
     }
@@ -129,8 +124,7 @@ class TaxCollectController extends ChangeNotifier {
 
   ApiResponse<CashierStatus>? _cashierStatusResponse;
 
-  ApiResponse<CashierStatus>? get cashierStatusResponse =>
-      _cashierStatusResponse;
+  ApiResponse<CashierStatus>? get cashierStatusResponse => _cashierStatusResponse;
 
   late CashierStatus _cashierStatus;
 
@@ -146,7 +140,7 @@ class TaxCollectController extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<ApiResponse<CashierStatus>> closeCashier() {
-    return _cashierRepository.closeCashier(_totalCollectResponse!.items!.first);
+  Future<ApiResponse<CashierStatus>> closeCashier(int amount) {
+    return _cashierRepository.closeCashier(amount);
   }
 }

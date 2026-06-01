@@ -47,21 +47,13 @@ class _TaxCollectScreenState extends ConsumerState<TaxCollectScreen> {
             Consumer(
               builder: (_, ref, __) {
                 _taxCollectController = ref.watch(taxCollectControllerProvider);
-                final cashierResponse =
-                    _taxCollectController.cashierStatusResponse;
-                final totalCollectResponse =
-                    _taxCollectController.totalCollectResponse;
-                final ApiResponse<dynamic>? response =
-                    (cashierResponse == null || totalCollectResponse == null)
+                final cashierResponse = _taxCollectController.cashierStatusResponse;
+                final totalCollectResponse = _taxCollectController.totalCollectResponse;
+                final ApiResponse<dynamic>? response = (cashierResponse == null || totalCollectResponse == null)
                     ? null
                     : ApiResponse(
-                        success:
-                            (cashierResponse.success ?? false) &&
-                            (totalCollectResponse.success ?? false),
-                        items:
-                            cashierResponse != null && cashierResponse!.success!
-                            ? cashierResponse.items
-                            : null,
+                        success: (cashierResponse.success ?? false) && (totalCollectResponse.success ?? false),
+                        items: cashierResponse != null && cashierResponse!.success! ? cashierResponse.items : null,
                       );
                 return ApiResponseView(
                   response: response,
@@ -72,15 +64,8 @@ class _TaxCollectScreenState extends ConsumerState<TaxCollectScreen> {
                     return ElevatedButton(
                       style: ElevatedButton.styleFrom(
                         backgroundColor: isClosed ? Colors.grey.shade200 : null,
-                        foregroundColor: isClosed
-                            ? Colors.grey.shade600
-                            : Colors.white,
-                        textStyle: TextStyle(
-                          fontSize: 14,
-                          fontWeight: isClosed
-                              ? FontWeight.bold
-                              : FontWeight.normal,
-                        ),
+                        foregroundColor: isClosed ? Colors.grey.shade600 : Colors.white,
+                        textStyle: TextStyle(fontSize: 14, fontWeight: isClosed ? FontWeight.bold : FontWeight.normal),
                       ),
                       onPressed: () async {
                         if (isClosed) return;
@@ -91,12 +76,11 @@ class _TaxCollectScreenState extends ConsumerState<TaxCollectScreen> {
                           negativeLabel: "NON",
                         );
                         if (response) {
-                          _closeCashier();
+                          // _closeCashier();
+                          _showCashierCloseAmountScreen();
                         }
                       },
-                      child: Text(
-                        isClosed ? "Caisse clôturée" : "Clôturer la caisse",
-                      ),
+                      child: Text(isClosed ? "Caisse clôturée" : "Clôturer la caisse"),
                     );
                   },
                 );
@@ -104,19 +88,13 @@ class _TaxCollectScreenState extends ConsumerState<TaxCollectScreen> {
             ),
             Gap(8),
             Text(
-              DateFormat(
-                'EEEE dd MMMM yyyy',
-                'fr_FR',
-              ).format(DateTime.now()).toUpperCase(),
+              DateFormat('EEEE dd MMMM yyyy', 'fr_FR').format(DateTime.now()).toUpperCase(),
               style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
               textAlign: TextAlign.center,
             ),
             Card(
               child: Padding(
-                padding: const EdgeInsets.symmetric(
-                  vertical: 16,
-                  horizontal: 8,
-                ),
+                padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 8),
                 child: Row(
                   children: [
                     Icon(Icons.attach_money_rounded),
@@ -129,11 +107,8 @@ class _TaxCollectScreenState extends ConsumerState<TaxCollectScreen> {
                           Gap(4),
                           Consumer(
                             builder: (context, ref, child) {
-                              _taxCollectController = ref.watch(
-                                taxCollectControllerProvider,
-                              );
-                              var totalCollectResponse =
-                                  _taxCollectController.totalCollectResponse;
+                              _taxCollectController = ref.watch(taxCollectControllerProvider);
+                              var totalCollectResponse = _taxCollectController.totalCollectResponse;
                               return ApiResponseView(
                                 response: totalCollectResponse,
                                 loadingView: Align(
@@ -144,10 +119,7 @@ class _TaxCollectScreenState extends ConsumerState<TaxCollectScreen> {
                                     child: Text(
                                       '******',
                                       textAlign: TextAlign.center,
-                                      style: TextStyle(
-                                        fontSize: 24,
-                                        fontWeight: FontWeight.bold,
-                                      ),
+                                      style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
                                     ),
                                   ),
                                 ),
@@ -159,16 +131,10 @@ class _TaxCollectScreenState extends ConsumerState<TaxCollectScreen> {
                                       Expanded(
                                         child: Text(
                                           "${totalCollect.formatAmount} Fcfa",
-                                          style: TextStyle(
-                                            fontSize: 20,
-                                            fontWeight: FontWeight.bold,
-                                          ),
+                                          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                                         ),
                                       ),
-                                      InkWell(
-                                        onTap: _getTotalCollect,
-                                        child: Icon(Icons.refresh_rounded),
-                                      ),
+                                      InkWell(onTap: _getTotalCollect, child: Icon(Icons.refresh_rounded)),
                                     ],
                                   );
                                 },
@@ -186,9 +152,7 @@ class _TaxCollectScreenState extends ConsumerState<TaxCollectScreen> {
             Expanded(
               child: Consumer(
                 builder: (context, ref, child) {
-                  _taxCollectController = ref.watch(
-                    taxCollectControllerProvider,
-                  );
+                  _taxCollectController = ref.watch(taxCollectControllerProvider);
                   var response = _taxCollectController.collectsResponse;
                   return ApiResponseView(
                     response: response,
@@ -206,10 +170,7 @@ class _TaxCollectScreenState extends ConsumerState<TaxCollectScreen> {
                               _taxCollectController.taxCollect = item;
                               Navigator.push(
                                 context,
-                                MaterialPageRoute(
-                                  builder: (context) =>
-                                      TaxCollectDetailScreen(),
-                                ),
+                                MaterialPageRoute(builder: (context) => TaxCollectDetailScreen()),
                               );
                             },
                             child: Card(
@@ -219,35 +180,24 @@ class _TaxCollectScreenState extends ConsumerState<TaxCollectScreen> {
                                   children: [
                                     Expanded(
                                       child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
+                                        crossAxisAlignment: CrossAxisAlignment.start,
                                         children: [
                                           Text(
                                             "Paiement N°${item.paymentNumber}",
-                                            style: TextStyle(
-                                              fontWeight: FontWeight.bold,
-                                            ),
+                                            style: TextStyle(fontWeight: FontWeight.bold),
                                           ),
                                           Gap(4),
-                                          Text(
-                                            item.collectedAt!.toDisplayDateTime,
-                                          ),
+                                          Text(item.collectedAt!.toDisplayDateTime),
                                           Gap(4),
                                           Container(
-                                            padding: EdgeInsets.symmetric(
-                                              horizontal: 8,
-                                              vertical: 4,
-                                            ),
+                                            padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                                             decoration: BoxDecoration(
                                               color: Colors.green,
-                                              borderRadius:
-                                                  BorderRadius.circular(8),
+                                              borderRadius: BorderRadius.circular(8),
                                             ),
                                             child: Text(
                                               "${item.amountCollected!.formatAmount} Fcfa",
-                                              style: TextStyle(
-                                                color: Colors.white,
-                                              ),
+                                              style: TextStyle(color: Colors.white),
                                             ),
                                           ),
                                         ],
@@ -272,10 +222,7 @@ class _TaxCollectScreenState extends ConsumerState<TaxCollectScreen> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => ContribuableSearchScreen()),
-          );
+          Navigator.push(context, MaterialPageRoute(builder: (context) => ContribuableSearchScreen()));
         },
         child: Icon(Icons.add),
       ),
@@ -294,11 +241,38 @@ class _TaxCollectScreenState extends ConsumerState<TaxCollectScreen> {
     _taxCollectController.getCashierStatus();
   }
 
-  void _closeCashier() async {
+  void _closeCashier(int amount) async {
     showLoadingDialog(context);
-    final response = await _taxCollectController.closeCashier();
+    final response = await _taxCollectController.closeCashier(amount);
     Navigator.pop(context);
     await showInfoDialog(context, message: response.message!);
     if (response.success!) _getCashierStatus();
+  }
+
+  void _showCashierCloseAmountScreen() async {
+    final amount = await showModalBottomSheet<int?>(
+      context: context,
+      isScrollControlled: true,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(16),
+          topRight: Radius.circular(16),
+        ),
+      ),
+      builder: (context) {
+        return StatefulBuilder(
+          builder: (context, setState) {
+            String amount = '';
+            return ConstrainedBox(
+              constraints: BoxConstraints(
+                maxHeight: MediaQuery.of(context).size.height * 0.8,
+              ),
+              child: CashierCloseAmountScreen(),
+            );
+          },
+        );
+      },
+    );
+    if(amount != null) _closeCashier(amount);
   }
 }

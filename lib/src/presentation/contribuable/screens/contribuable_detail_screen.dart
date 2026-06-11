@@ -68,6 +68,8 @@ class _ContribuableDetailScreenState extends ConsumerState<ContribuableDetailScr
                               Container(margin: const EdgeInsets.symmetric(vertical: 8), child: Divider()),
                               _buildRowInfo("Matricule", _contribuable.matricule ?? ''),
                               Container(margin: const EdgeInsets.symmetric(vertical: 8), child: Divider()),
+                              _buildRowInfo("Activité", _contribuable.activite?.label ?? ''),
+                              Container(margin: const EdgeInsets.symmetric(vertical: 8), child: Divider()),
                               _buildRowInfo("Téléphone", _contribuable.phoneNumber ?? ''),
                               Container(margin: const EdgeInsets.symmetric(vertical: 8), child: Divider()),
                               // _buildRowInfo("Nom du commerce", _contribuable.activite?.firstOrNull ?? ''),

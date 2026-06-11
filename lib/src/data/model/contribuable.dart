@@ -14,7 +14,7 @@ class Contribuable {
   IdentityType? identityType;
   String? longitude;
   String? latitude;
-  List<dynamic>? activite;
+  BusinessActivity? activite;
   TaxType? tax;
   List<String>? typeContribuable;
 
@@ -51,13 +51,17 @@ class Contribuable {
     createdAt = json['createdAt'];
     longitude = json['longitude'];
     latitude = json['latitude'];
-    activite = json['activite'];
     typeContribuable = json['typeContribuable'] != null ? List<String>.from(json['typeContribuable']) : null;
     tax = json['tax'] != null ? TaxType.fromJson(json['tax']) : null;
     if (json['idIdentity'] != null) {
       identityType = json['idIdentity'] is String
           ? IdentityType(label: json['idIdentity'])
           : IdentityType.fromJson(json['idIdentity']);
+    }
+    if (json['activite'] != null) {
+      activite = json['activite'] is String
+          ? BusinessActivity(label: json['activite'])
+          : BusinessActivity.fromJson(json['activite']);
     }
   }
 

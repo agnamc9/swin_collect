@@ -265,20 +265,28 @@ class _CreateContribuableScreenState extends ConsumerState<CreateContribuableScr
                   },
                 ),
                 Gap(16),
-                TextFormField(
-                  controller: numeroPieceController,
-                  decoration: InputDecoration(
-                    labelText: "Numéro de pièce",
-                    border: OutlineInputBorder(borderSide: BorderSide(color: Colors.black)),
-                    filled: true,
-                    fillColor: Colors.white,
-                    prefixIcon: Icon(Icons.work_outline),
-                  ),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return "Le numéro de pièce est requis";
-                    }
-                    return null;
+                Consumer(
+                  builder: (context, ref, child) {
+                    _contribuableController = ref.watch(createContribuableControllerProvider);
+                    var item = _contribuableController.identityType;
+                    numeroPieceController.text = (item?.isAutre ?? false) ? "N/A" : "";
+                    return TextFormField(
+                      controller: numeroPieceController,
+                      enabled: !(item?.isAutre ?? true),
+                      decoration: InputDecoration(
+                        labelText: "Numéro de pièce",
+                        border: OutlineInputBorder(borderSide: BorderSide(color: Colors.black)),
+                        filled: true,
+                        fillColor: Colors.white,
+                        prefixIcon: Icon(Icons.work_outline),
+                      ),
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return "Le numéro de pièce est requis";
+                        }
+                        return null;
+                      },
+                    );
                   },
                 ),
                 Gap(16),

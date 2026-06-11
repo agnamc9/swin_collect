@@ -9,6 +9,8 @@ class IdentityType {
     label = json['label'];
   }
 
+  bool get isAutre => label?.toLowerCase().contains("autre") ?? false;
+
   @override
   bool operator ==(Object other) {
     return other is IdentityType && other.id == id;

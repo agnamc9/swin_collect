@@ -147,45 +147,69 @@ class _CreateContribuableScreenState extends ConsumerState<CreateContribuableScr
                   },
                 ),
                 Gap(16),
-                TextFormField(
-                  controller: adresseController,
-                  decoration: InputDecoration(
-                    labelText: "Adresse",
-                    border: OutlineInputBorder(borderSide: BorderSide(color: Colors.black)),
-                    filled: true,
-                    fillColor: Colors.white,
-                    prefixIcon: Icon(Icons.pin_drop_outlined),
-                  ),
-                  textCapitalization: TextCapitalization.sentences,
-                  keyboardType: TextInputType.text,
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return "L'adresse est requise";
+                Consumer(
+                  builder: (context, ref, child) {
+                    _contribuableController = ref.watch(createContribuableControllerProvider);
+                    var item = _contribuableController.neighborHood;
+                    if (item?.isMarche ?? false) {
+                      adresseController.text = "N/A";
+                    } else {
+                      if (adresseController.text == "N/A") adresseController.clear();
                     }
-                    return null;
+                    return TextFormField(
+                      controller: adresseController,
+                      enabled: item == null ? true : !item.isMarche,
+                      decoration: InputDecoration(
+                        labelText: "Adresse",
+                        border: OutlineInputBorder(borderSide: BorderSide(color: Colors.black)),
+                        filled: true,
+                        fillColor: Colors.white,
+                        prefixIcon: Icon(Icons.pin_drop_outlined),
+                      ),
+                      textCapitalization: TextCapitalization.sentences,
+                      keyboardType: TextInputType.text,
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return "L'adresse est requise";
+                        }
+                        return null;
+                      },
+                    );
                   },
                 ),
                 Gap(16),
-                TextFormField(
-                  controller: telephoneController,
-                  decoration: InputDecoration(
-                    labelText: "Numéro de téléphone",
-                    border: OutlineInputBorder(borderSide: BorderSide(color: Colors.black)),
-                    filled: true,
-                    fillColor: Colors.white,
-                    prefixIcon: Icon(Icons.phone_outlined),
-                  ),
-                  keyboardType: TextInputType.phone,
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return "Le numéro de téléphone est requis";
+                Consumer(
+                  builder: (context, ref, child) {
+                    _contribuableController = ref.watch(createContribuableControllerProvider);
+                    var item = _contribuableController.neighborHood;
+                    if (item?.isMarche ?? false) {
+                      telephoneController.text = "N/A";
+                    } else {
+                      if (telephoneController.text == "N/A") telephoneController.clear();
                     }
-                    try {
-                      int.parse(value.trim());
-                    } catch (e) {
-                      return "Le numéro est invalide";
-                    }
-                    return null;
+                    return TextFormField(
+                      controller: telephoneController,
+                      enabled: item == null ? true : !item.isMarche,
+                      decoration: InputDecoration(
+                        labelText: "Numéro de téléphone",
+                        border: OutlineInputBorder(borderSide: BorderSide(color: Colors.black)),
+                        filled: true,
+                        fillColor: Colors.white,
+                        prefixIcon: Icon(Icons.phone_outlined),
+                      ),
+                      keyboardType: TextInputType.phone,
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return "Le numéro de téléphone est requis";
+                        }
+                        try {
+                          int.parse(value.trim());
+                        } catch (e) {
+                          return "Le numéro est invalide";
+                        }
+                        return null;
+                      },
+                    );
                   },
                 ),
                 Gap(16),
@@ -269,10 +293,14 @@ class _CreateContribuableScreenState extends ConsumerState<CreateContribuableScr
                   builder: (context, ref, child) {
                     _contribuableController = ref.watch(createContribuableControllerProvider);
                     var item = _contribuableController.identityType;
-                    numeroPieceController.text = (item?.isAutre ?? false) ? "N/A" : "";
+                    if (item?.isAutre ?? false) {
+                      numeroPieceController.text = "N/A";
+                    } else {
+                      if (numeroPieceController.text == "N/A") numeroPieceController.clear();
+                    }
                     return TextFormField(
                       controller: numeroPieceController,
-                      enabled: !(item?.isAutre ?? true),
+                      enabled: item == null ? true : !item.isAutre,
                       decoration: InputDecoration(
                         labelText: "Numéro de pièce",
                         border: OutlineInputBorder(borderSide: BorderSide(color: Colors.black)),
@@ -503,21 +531,23 @@ class _CreateContribuableScreenState extends ConsumerState<CreateContribuableScr
       return false;
     }
 
-    if (adresseController.text.isEmpty) {
-      showInfoDialog(context, message: "L'adresse est requise");
-      return false;
-    }
+    if (!_contribuableController.neighborHood!.isMarche) {
+      if (adresseController.text.isEmpty) {
+        showInfoDialog(context, message: "L'adresse est requise");
+        return false;
+      }
 
-    if (telephoneController.text.isEmpty) {
-      showInfoDialog(context, message: "Le téléphone est requis");
-      return false;
-    }
+      if (telephoneController.text.isEmpty) {
+        showInfoDialog(context, message: "Le téléphone est requis");
+        return false;
+      }
 
-    try {
-      int.parse(telephoneController.text.trim());
-    } catch (e) {
-      showInfoDialog(context, message: "Le téléphone est invalide");
-      return false;
+      try {
+        int.parse(telephoneController.text.trim());
+      } catch (e) {
+        showInfoDialog(context, message: "Le téléphone est invalide");
+        return false;
+      }
     }
 
     if (_contribuableController.activity == null) {

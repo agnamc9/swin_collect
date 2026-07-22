@@ -1,3 +1,4 @@
+import 'package:faker/faker.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tax_collect/src/data/data.dart';
 
@@ -34,6 +35,8 @@ class ContribuableRepositoryImpl extends ContribuableRepository {
 
   ContribuableRepositoryImpl({required RemoteClient remoteClient}) : _remoteClient = remoteClient;
 
+  final Faker _faker = Faker();
+
   @override
   Future<ApiResponse<Contribuable>> getContribuables() {
     return runBlock(() async {
@@ -62,13 +65,13 @@ class ContribuableRepositoryImpl extends ContribuableRepository {
       var result = await _remoteClient.createContribuable({
         "firstname": nom,
         "lastname": prenoms,
-        "address": adresse,
+        "address": adresse == "N/A" ? "N/A-${_faker.address.buildingNumber()}" : adresse,
         "ville": "",
-        "phoneNumber": telephone,
+        "phoneNumber": telephone == "N/A" ? "0${_faker.phoneNumber.random.fromCharSet("0123456789", 9)}" : telephone,
         "latitude": "$latitude",
         "longitude": "$longitude",
         "photoPath": "null",
-        "idIdentity": numeroPiece,
+        "idIdentity": numeroPiece == "N/A" ? "N/A-${_faker.guid.guid()}" : numeroPiece,
         "identityTypeId": identityId,
         "activite": activite,
         "quartier": quartier,

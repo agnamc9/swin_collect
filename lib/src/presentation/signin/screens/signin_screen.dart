@@ -25,8 +25,8 @@ class _SigninScreenState extends ConsumerState<SigninScreen> {
   void initState() {
     _signinController = ref.read(signinControllerProvider);
     if (kDebugMode) {
-      _usernameController.text = "Test3";
-      _passwordController.text = "12345678Aa";
+      _usernameController.text = "agent1";
+      _passwordController.text = "password1";
     }
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
